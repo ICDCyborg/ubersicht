@@ -7,7 +7,11 @@
     <div class="container">
         <div class="masthead-subheading ">目標達成をサポートするToDoアプリ</div>
         <div class="masthead-heading text-uppercase">Ubersicht</div>
-        <a class="btn btn-primary btn-xl text-uppercase" href="#">ユーザー登録</a>
+        {% if user.is_authenticated %}
+        <a class="btn btn-primary btn-xl text-uppercase" href="#">メインページへ</a>
+        {% else %}
+        <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'accounts:signup' %}">ユーザ登録</a>
+        {% endif %}
     </div>
 </header>
 {% endblock content %}

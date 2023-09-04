@@ -4,4 +4,4 @@ from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
     # なりたい自分や抱負などを入れる
-    dream = models.TextField(max_length=100, blank=True, null=True)
+    dream = models.TextField(verbose_name="なりたい自分", max_length=200, blank=True, null=True)
