@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import environ
-
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -132,7 +132,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 env = environ.Env()
-env.read_env()
+env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # メールサーバーへの接続設定
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
