@@ -1,6 +1,12 @@
-from django.views.generic import CreateView, TemplateView
-from .forms import CustomUserCreationForm
+from typing import Any, Dict
+from django.views.generic import CreateView, TemplateView \
+    , UpdateView
+from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .models import CustomUser
 from django.urls import reverse_lazy
+from django.contrib.auth.models import User
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 class SignUpView(CreateView):
     '''ユーザ登録ページのビュー'''
@@ -18,3 +24,25 @@ class SignUpView(CreateView):
 class SignUpSuccessView(TemplateView):
     '''ユーザ登録完了ページのビュー'''
     template_name = 'signup_success.html'
+
+
+# need login
+@method_decorator(login_required, name='dispatch')
+class UserChangeView(UpdateView):
+    '''ユーザ情報変更ページのビュー'''
+    model = CustomUser
+    form_class = CustomUserChangeForm
+    template_name = 'user_config.html'
+    success_url = reverse_lazy('accounts:user_change_done')
+
+    def form_valid(self, form):
+        form.update(user=self.request.user)
+        return super().form_valid(form)
+    
+    def get_object(self, queryset=None):
+        user = self.request.user
+        if user.pk == self.kwargs['pk']:
+            return user
+        else:
+            from django.http import Http404
+            raise Http404('ユーザー情報への編集権限がありません。')

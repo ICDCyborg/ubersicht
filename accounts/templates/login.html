@@ -99,7 +99,7 @@
       <form method="post">
         {% csrf_token %}
         <img src={% static 'img/bootstrap-logo.svg' %} alt="" width="72" heigh="57" class="mb-4">
-        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+        <h1 class="h3 mb-3 fw-normal">ログインしてください</h1>
         <label for="Username" class="visually-hidden">User name</label>
         <input type="text" name="username" id="id_username" maxlength="150"
           autocapitalize="none" autocomplete="username" placeholder="ユーザー名"
@@ -109,7 +109,7 @@
           class="form-control" placeholder="パスワード" required autofocus>
         <input type="submit" value="ログイン" class="w-100 btn btn-lg btn-primary">
         <br><br>
-        {% comment %} <p><a href="{% url 'password_reset' %}">パスワードを忘れましたか？</a></p> {% endcomment %}
+        <p><a href="{% url 'password_reset' %}">パスワードを忘れましたか？</a></p>
         <input type="hidden" name="next" value="{% url 'todo:index' %}">
       </form>
     </main>

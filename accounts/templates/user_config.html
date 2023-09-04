@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Ubersicht - ユーザ情報更新{% endblock title %}
+
+{% block content %}
+    <hr>
+    <div class="container">
+        <div class="row">
+            <div class="col offset-2">
+                <h3>ユーザ情報更新</h3>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <p>
+                            {{ field.label_tag }} <br>
+                            {{field}}
+                            {% if field.help_text %}
+                            <small style='color: grey;'>{{field.help_text}}</small>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <p style='color: red;'>{{ error }}</p>
+                            {% endfor %}
+                        </p>
+                    {% endfor %}
+                    <input type="submit" value="更新">
+                </form>
+                <br>
+                <p><a href="{% url 'password_reset' %}">パスワードのリセットはこちら</a></p>
+                <p><a href="{% url 'todo:index' %}">戻る</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
