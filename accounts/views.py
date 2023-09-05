@@ -25,8 +25,6 @@ class SignUpSuccessView(TemplateView):
     '''ユーザ登録完了ページのビュー'''
     template_name = 'signup_success.html'
 
-
-# need login
 @method_decorator(login_required, name='dispatch')
 class UserChangeView(UpdateView):
     '''ユーザ情報変更ページのビュー'''
@@ -67,6 +65,7 @@ class UserDeleteView(DeleteView):
             from django.http import Http404
             raise Http404('ユーザを削除する権限がありません。')
         
+# 退会後は自動でログアウトされるからlogin_requiredは必要ないんだよ
 class UserDeleteDoneView(TemplateView):
     '''ユーザ削除完了ページ'''
     template_name = 'user_delete_done.html'
