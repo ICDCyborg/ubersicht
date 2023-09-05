@@ -17,5 +17,5 @@ class MainView(ListView):
     model = Todos
     
     def get_queryset(self):
-        goal = Goals.objects.filter(user_id=self.request.user.pk, is_complete = False)
+        goal = Goals.objects.filter(user_id=self.request.user.pk, is_completed = False)
         return Todos.objects.filter(goal_id=goal[0].pk)

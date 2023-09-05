@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models import CustomUser
+from datetime import datetime, date, timedelta
 
 # Create your models here.
 class Goals(models.Model):
@@ -14,6 +15,14 @@ class Goals(models.Model):
 
     def __str__(self):
         return self.subject
+    
+    @property
+    def days_left(self) -> int:
+        '''期日までの残り日数を返す'''
+        if self.until_date is None:
+            return 0
+        else:
+            return (self.until_date - date.today()).days
 
 class Todos(models.Model):
     '''ToDo管理テーブル'''
@@ -33,6 +42,47 @@ class Todos(models.Model):
 
     def __str__(self) -> str:
         return self.title
+    
+    @property
+    def unit(self) -> str:
+        '''タイプに合わせた単位を返す'''
+        if self.type == 0:
+            return ''
+        elif self.type == 1:
+            return '回'
+        elif self.type == 2:
+            return '点'
+        elif self.type == 3:
+            return 'ページ'
+        else:
+            return ''
+    
+    @property
+    def pinned(self) -> bool:
+        '''ピン留めされているかどうか'''
+        return self.state == 0
+    
+    @property
+    def completed(self) -> bool:
+        '''完了済みかどうか'''
+        return self.state == 2
+    
+    @property
+    def days_left(self) -> int:
+        '''期日までの残り日数を返す'''
+        if self.until_date is None:
+            return 0
+        else:
+            return (self.until_date - date.today()).days
+    
+    @property
+    def percent(self) -> float | None:
+        '''進捗率を浮動小数点で返す'''
+        if not self.amount:
+            return None
+        else:
+            return self.current / self.amount * 100
+
 
 class Records(models.Model):
     '''実施記録テーブル'''
