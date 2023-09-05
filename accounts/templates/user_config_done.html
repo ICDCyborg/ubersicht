@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}ユーザ情報の変更完了{% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col offset-4 py-4">
+            <h3>ユーザ情報の変更が完了しました。</h3>
+        </div>
+        <p><a href="{% url 'todo:index' %}">戻る</a></p>
+    </div>
+</div>
+{% endblock content %}

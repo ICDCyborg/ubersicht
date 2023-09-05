@@ -1,6 +1,6 @@
 from typing import Any, Dict
 from django.views.generic import CreateView, TemplateView \
-    , UpdateView
+    , UpdateView, DeleteView
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import CustomUser
 from django.urls import reverse_lazy
@@ -46,3 +46,8 @@ class UserChangeView(UpdateView):
         else:
             from django.http import Http404
             raise Http404('ユーザー情報への編集権限がありません。')
+        
+@method_decorator(login_required, name='dispatch')
+class UserChangeDoneView(TemplateView):
+    '''ユーザ情報変更完了ページ'''
+    template_name = 'user_config_done.html'
