@@ -51,3 +51,22 @@ class UserChangeView(UpdateView):
 class UserChangeDoneView(TemplateView):
     '''ユーザ情報変更完了ページ'''
     template_name = 'user_config_done.html'
+
+@method_decorator(login_required, name='dispatch')
+class UserDeleteView(DeleteView):
+    '''ユーザ削除ページ'''
+    model = CustomUser
+    template_name = 'user_delete.html'
+    success_url = reverse_lazy('accounts:user_delete_done')
+
+    def get_object(self, queryset=None):
+        user = self.request.user
+        if user.pk == self.kwargs['pk']:
+            return user
+        else:
+            from django.http import Http404
+            raise Http404('ユーザを削除する権限がありません。')
+        
+class UserDeleteDoneView(TemplateView):
+    '''ユーザ削除完了ページ'''
+    template_name = 'user_delete_done.html'

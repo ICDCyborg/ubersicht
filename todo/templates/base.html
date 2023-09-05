@@ -17,35 +17,41 @@
         <nav class="navbar navbar-expand-md navbar-dark bg-dark">
             <div class="container">
                 {% comment %} ロゴマーク：Todo　リンクを入れる　フォントをかっこよくする {% endcomment %}
-                <a class="navbar-brand" href="#">Ubersicht</a>
+                <a class="navbar-brand px-5" href="#">Ubersicht</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+                    <span class="navbar-toggler-icon"></span>
                 </button>
-
+                
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        メニュー
-                    </a>
                     {% if user.is_authenticated %}
-                    <!-- Here's the magic. Add the .animate and .slideIn classes to your .dropdown-menu and you're all set! -->
-                    <div class="dropdown-menu dropdown-menu-end animate slideIn" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">ユーザー設定</a>
-                        <a class="dropdown-item" href="#">目標設定</a>
-                        <a class="dropdown-item" href="#">実績</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{% url 'accounts:logout' %}">ログアウト</a>
-                    </div>
-                    {% else %}
-                    <div class="dropdown-menu dropdown-menu-end animate slideIn" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{% url 'accounts:signup' %}">ユーザー登録</a>
-                        <a class="dropdown-item" href="{% url 'accounts:login' %}">ログイン</a>
-                        <a class="dropdown-item" href="#">問い合わせ</a>
+                    <div class="text-muted justify-content-end">
+                        ＜{{ user.username }} でログイン中＞
                     </div>
                     {% endif %}
-                    </li>
-                </ul>
+
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            メニュー
+                        </a>
+                        {% if user.is_authenticated %}
+                        <!-- Here's the magic. Add the .animate and .slideIn classes to your .dropdown-menu and you're all set! -->
+                        <div class="dropdown-menu dropdown-menu-end animate slideIn" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'accounts:user_change' pk=user.pk %}">ユーザー設定</a>
+                            <a class="dropdown-item" href="#">目標設定</a>
+                            <a class="dropdown-item" href="#">実績</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'accounts:logout' %}">ログアウト</a>
+                        </div>
+                        {% else %}
+                        <div class="dropdown-menu dropdown-menu-end animate slideIn" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'accounts:signup' %}">ユーザー登録</a>
+                            <a class="dropdown-item" href="{% url 'accounts:login' %}">ログイン</a>
+                            <a class="dropdown-item" href="mailto:angrycoward@gmail.com">問い合わせ</a>
+                        </div>
+                        {% endif %}
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
