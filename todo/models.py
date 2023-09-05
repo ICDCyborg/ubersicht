@@ -5,7 +5,7 @@ from datetime import datetime, date, timedelta
 # Create your models here.
 class Goals(models.Model):
     '''目標管理テーブル'''
-    user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     subject = models.CharField(verbose_name='目標', max_length=50)
     from_date = models.DateField(verbose_name='作成日', auto_now_add=True)
     until_date = models.DateField(verbose_name='期日', null=True, blank=True)
@@ -26,7 +26,7 @@ class Goals(models.Model):
 
 class Todos(models.Model):
     '''ToDo管理テーブル'''
-    goal_id = models.ForeignKey(Goals, on_delete=models.CASCADE)
+    goal = models.ForeignKey(Goals, on_delete=models.CASCADE)
     title = models.CharField(verbose_name='タイトル', max_length=50)
     from_date = models.DateField(verbose_name='作成日', auto_now_add=True)
     until_date = models.DateField(verbose_name='期日', null=True, blank=True)
@@ -86,9 +86,9 @@ class Todos(models.Model):
 
 class Records(models.Model):
     '''実施記録テーブル'''
-    todo_id = models.ForeignKey(Todos, on_delete=models.CASCADE)
+    todo = models.ForeignKey(Todos, on_delete=models.CASCADE)
     done_at = models.DateTimeField(verbose_name='日時', auto_now_add=True)
     num = models.IntegerField(verbose_name='数量', null=True, blank=True)
 
     def __str__(self) -> str:
-        return self.todo_id.title + ' ' + str(self.done_at) + ' ' + str(self.num)
+        return self.todo.title + ' ' + str(self.done_at) + ' ' + str(self.num) + self.todo.unit

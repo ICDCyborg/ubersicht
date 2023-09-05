@@ -3,19 +3,35 @@
 {% block title %}メインページ{% endblock title %}
 {% block content %}
 <!-- Page Content-->
+<style>
+    .progBar{
+        height:24px;
+        background-color:#ececec;
+        position:relative;
+        border-radius:10px;
+        overflow: hidden;
+    }
+    .progBar .bar{
+        position:absolute;
+        height:100%;
+        background-color:#FFCA28;
+        overflow: visible;
+
+    }
+</style>
 <div class="container px-4 px-lg-5">
     <!-- Heading Row-->
     <div class="row gx-4 gx-lg-5 align-items-center my-5">
         <div class="col-lg-7"><iframe src="https://calendar.google.com/calendar/embed?height=400&wkst=1&bgcolor=%23ffffff&ctz=Asia%2FTokyo&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=1&src=M2VhZTZhZTIwOTU4ZDZhNGQ1YmQwMjU3Yzk3YmQ1NzBjZDA0YzVjNGJlNjNlZWJjOTU3YzgyMzMwMzE0OGVmZkBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=amEuamFwYW5lc2UjaG9saWRheUBncm91cC52LmNhbGVuZGFyLmdvb2dsZS5jb20&color=%23009688&color=%23009688" style="border-width:0" width="600" height="300" frameborder="0" scrolling="no"></iframe></div>
         <div class="col-lg-5">
-            <h1 class="font-weight-light">目標の期限とタイトル</h1>
-            <p>メモをここに追加することが出来ます</p>
+            <h1 class="font-weight-light">{{ goal.until_date| date:'m月d日' }}までに{{ goal.subject }}</h1>
+            <p>{{ goal.memo }}</p>
             <a class="btn btn-primary" href="#!">目標設定</a>
         </div>
     </div>
     <!-- Call to Action-->
     <div class="card text-white bg-secondary my-2 py-0 text-center">
-        <div class="card-body"><h3 class="text-white m-0">期限まであと〇日！！</h3></div>
+        <div class="card-body"><h3 class="text-white m-0">期限まであと{{ goal.days_left}}日！！</h3></div>
     </div>
     <!-- Content Row-->
     <div class="row gx-4 gx-lg-5">
@@ -24,28 +40,31 @@
             <div class="card h-100">
                 <div class="card-body">
                     <h2 class="card-title">{{ todo.title }}</h2>
-                    <p class="card-text">{{ todo.memo }}{{ todo.foo }}</p>
+                    {% if todo.percent is not None %}
+                    <div class="progBar" style="width:100%;">
+                        <p class="bar card-text" style="width:{{todo.percent}}%">
+                            <div style="position:relative;padding-left: 1em;">{{ todo.percent|floatformat:1 }}%</div>
+                        </p>
+                    </div>
+                    {% endif %}
+                    {% if todo.memo is not None %}
+                    <p class="card-text">{{ todo.memo }}</p>
+                    {% endif %}
+                    {% if todo.image is not None %}
+                    <img src="{{ todo.image.url }}" alt="" style="max-width: 100%;">
+                    {% endif %}
                 </div>
                 <div class="card-footer"><a class="btn btn-primary btn-sm" href="#!">詳細</a></div>
             </div>
         </div>
         {% endfor %}
         <div class="col-md-4 mb-5">
-            <div class="card h-100">
+            <div class="card h-100" style="background-color: #aaccff;">
                 <div class="card-body">
-                    <h2 class="card-title">Card Two</h2>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod tenetur ex natus at dolorem enim! Nesciunt pariatur voluptatem sunt quam eaque, vel, non in id dolore voluptates quos eligendi labore.</p>
+                    <h2 class="card-title">新規タスク</h2>
+                    <p class="card-text"></p>
                 </div>
-                <div class="card-footer"><a class="btn btn-primary btn-sm" href="#!">More Info</a></div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-5">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h2 class="card-title">Card Three</h2>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem magni quas ex numquam, maxime minus quam molestias corporis quod, ea minima accusamus.</p>
-                </div>
-                <div class="card-footer"><a class="btn btn-primary btn-sm" href="#!">More Info</a></div>
+                <div class="card-footer"><a class="btn btn-primary btn-sm" href="#!">作成</a></div>
             </div>
         </div>
     </div>
