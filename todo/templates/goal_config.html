@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}目標設定{% endblock title %}
+{% block content %}
+<style>
+    #checkbox_1 ~ .display_if_checked{
+        display:none;
+    }
+    #checkbox_1:checked ~ .display_if_checked{
+        display:inline;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col py-4">
+            <h1>あなたの目標：</h1>
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form.until_date }} までに、{{ form.subject }} <br><br>
+                <input type="checkbox" name="" id="checkbox_1">
+                <label for="checkbox_1">リマインドメールを受け取る</label><br>
+                <div class="display_if_checked">
+                    {{ form.remind_at }}
+                </div> <br><br>
+                コメント：<br>
+                {{ form.memo }} <br>
+                <button type="submit" class="btn btn-primary">保存</button>
+                <a href="{% url 'todo:main' %}" class="btn btn-secondary">戻る</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

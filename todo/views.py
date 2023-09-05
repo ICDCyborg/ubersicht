@@ -1,6 +1,6 @@
 from typing import Any, Dict
 from django.shortcuts import render
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, UpdateView
 # import methoddecorator
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -9,11 +9,12 @@ from .models import Goals, Todos, Records
 # Create your views here.
 
 class IndexView(TemplateView):
-    '''ウェルカムページを表示するビュー'''
+    '''ウェルカムページを表示'''
     template_name = 'index.html'
 
 @method_decorator(login_required, name='dispatch')
 class MainView(ListView):
+    '''メインページの表示'''
     template_name = 'main.html'
     model = Todos
     
@@ -25,3 +26,12 @@ class MainView(ListView):
         context = super().get_context_data(**kwargs)
         context['goal'] = Goals.objects.filter(user_id=self.request.user.pk, is_completed = False)[0]
         return context
+
+class GoalConfigView(UpdateView):
+    '''目標設定を行う'''
+    template_name = 'goal_config.html'
+    model = Goals
+    fields = ['subject', 'until_date', 'remind_at', 'memo']
+    
+    def get_object(self, queryset=None):
+        return Goals.objects.filter(user_id=self.request.user.pk, is_completed = False)[0]
