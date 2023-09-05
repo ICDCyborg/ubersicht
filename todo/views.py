@@ -1,8 +1,10 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 # import methoddecorator
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+
+from .models import Goals, Todos, Records
 # Create your views here.
 
 class IndexView(TemplateView):
@@ -10,5 +12,10 @@ class IndexView(TemplateView):
     template_name = 'index.html'
 
 @method_decorator(login_required, name='dispatch')
-class MainView(TemplateView):
+class MainView(ListView):
     template_name = 'main.html'
+    model = Todos
+    
+    def get_queryset(self):
+        goal = Goals.objects.filter(user_id=self.request.user.pk, is_complete = False)
+        return Todos.objects.filter(goal_id=goal[0].pk)

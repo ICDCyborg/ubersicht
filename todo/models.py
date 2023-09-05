@@ -31,8 +31,14 @@ class Todos(models.Model):
     # 状態：ピン留めなら０、通常は１、完了済みは２
     state = models.IntegerField(verbose_name='状態', default=1)
 
+    def __str__(self) -> str:
+        return self.title
+
 class Records(models.Model):
     '''実施記録テーブル'''
     todo_id = models.ForeignKey(Todos, on_delete=models.CASCADE)
     done_at = models.DateTimeField(verbose_name='日時', auto_now_add=True)
     num = models.IntegerField(verbose_name='数量', null=True, blank=True)
+
+    def __str__(self) -> str:
+        return self.todo_id.title + ' ' + str(self.done_at) + ' ' + str(self.num)
