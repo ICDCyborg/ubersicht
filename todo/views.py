@@ -4,8 +4,13 @@ from django.views.generic import TemplateView, ListView, UpdateView
 # import methoddecorator
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from .forms import GoalsForm
+
+# import reverse_lazy
+from django.urls import reverse_lazy
 
 from .models import Goals, Todos, Records
+from django.urls import reverse_lazy
 # Create your views here.
 
 class IndexView(TemplateView):
@@ -30,8 +35,14 @@ class MainView(ListView):
 class GoalConfigView(UpdateView):
     '''目標設定を行う'''
     template_name = 'goal_config.html'
-    model = Goals
-    fields = ['subject', 'until_date', 'remind_at', 'memo']
+    form_class = GoalsForm
+    success_url = reverse_lazy('todo:main')
+
+    def form_valid(self, form):
+        postdata = form.save(commit=False)
+        postdata.user = self.request.user
+        postdata.save()
+        return super().form_valid(form)
     
     def get_object(self, queryset=None):
         return Goals.objects.filter(user_id=self.request.user.pk, is_completed = False)[0]

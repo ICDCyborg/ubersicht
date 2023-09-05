@@ -26,7 +26,7 @@
         <div class="col-lg-5">
             <h1 class="font-weight-light">{{ goal.until_date| date:'m月d日' }}までに{{ goal.subject }}</h1>
             <p>{{ goal.memo }}</p>
-            <a class="btn btn-primary" href="#!">目標設定</a>
+            <a class="btn btn-primary" href="{% url 'todo:goal_config' %}">目標設定</a>
         </div>
     </div>
     <!-- Call to Action-->
@@ -47,10 +47,10 @@
                         </p>
                     </div>
                     {% endif %}
-                    {% if todo.memo is not None %}
+                    {% if todo.memo %}
                     <p class="card-text">{{ todo.memo }}</p>
                     {% endif %}
-                    {% if todo.image is not None %}
+                    {% if todo.image %}
                     <img src="{{ todo.image.url }}" alt="" style="max-width: 100%;">
                     {% endif %}
                 </div>
