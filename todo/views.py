@@ -46,7 +46,8 @@ class GoalConfigView(UpdateView):
         return super().form_valid(form)
     
     def get_object(self, queryset=None):
-        return Goals.objects.filter(user_id=self.request.user.pk, is_completed = False)[0]
+        active_goal, created = Goals.objects.get_or_create(user=self.request.user, is_completed = False)
+        return active_goal
     
 @method_decorator(login_required, name='dispatch')
 class GoalAchievedView(TemplateView):
