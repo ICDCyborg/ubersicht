@@ -12,4 +12,5 @@ urlpatterns = [
     path('goal_config', GoalConfigView.as_view(), name='goal_config'),
     # 目標達成
     path('goal_achieved', GoalAchievedView.as_view(), name='goal_achieved'),
+    path('goal_delete', GoalDeleteView.as_view(), name='goal_delete'),
 ]

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col offset-4 py-4">
+            <h3>{{ message }}</h3>
+            {% if user.is_authenticated %}
+            <p><a href="{% url 'todo:main' %}" class="btn btn-primary">メインページ</a></p>
+            {% else %}
+            <p><a href="{% url 'todo:index' %}" class="btn btn-primary">戻る</a></p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -27,6 +27,7 @@
                 <a href="{% url 'todo:main' %}" class="btn btn-secondary">戻る</a>
                 {% if update %}
                 <a href="{% url 'todo:goal_achieved' %}" class="btn btn-secondary">目標達成</a>
+                <a href="{% url 'todo:goal_delete' %}" class="btn btn-secondary">目標の削除</a>
                 {% endif %}
             </form>
         </div>

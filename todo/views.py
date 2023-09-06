@@ -82,3 +82,20 @@ class GoalAchievedView(TemplateView):
         context['title'] = '目標達成！'
         context['congrats'] = '目標を達成しました！おめでとうございます！'
         return context
+
+class GoalDeleteView(TemplateView):
+    template_name = 'done.html'
+
+    def get(self, request, *args, **kwargs):
+        try:
+            goal = Goals.objects.get(user=request.user, is_completed=False)
+            goal.delete()
+        except Goals.DoesNotExist:
+            pass
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['title'] = '目標の削除'
+        context['message'] = '目標を削除しました。'
+        return context
