@@ -21,11 +21,13 @@
 </style>
 <div class="container px-4 px-lg-5">
     <!-- Heading Row-->
+    {% comment %} 目標が設定されている場合 {% endcomment %}
+    {% if goal %}
     <div class="row gx-4 gx-lg-5 align-items-center my-5">
         <div class="col-lg-7"><iframe src="https://calendar.google.com/calendar/embed?height=400&wkst=1&bgcolor=%23ffffff&ctz=Asia%2FTokyo&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=1&src=M2VhZTZhZTIwOTU4ZDZhNGQ1YmQwMjU3Yzk3YmQ1NzBjZDA0YzVjNGJlNjNlZWJjOTU3YzgyMzMwMzE0OGVmZkBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=amEuamFwYW5lc2UjaG9saWRheUBncm91cC52LmNhbGVuZGFyLmdvb2dsZS5jb20&color=%23009688&color=%23009688" style="border-width:0" width="600" height="300" frameborder="0" scrolling="no"></iframe></div>
         <div class="col-lg-5">
             <h1 class="font-weight-light">{{ goal.until_date| date:'m月d日' }}までに{{ goal.subject }}</h1>
-            <p>{{ goal.memo }}</p>
+            <p>{{ goal.is_completed }}{{ goal.memo }}</p>
             <a class="btn btn-primary" href="{% url 'todo:goal_config' %}">目標設定</a>
         </div>
     </div>
@@ -68,5 +70,16 @@
             </div>
         </div>
     </div>
+    {% comment %} 目標が設定されていない場合 {% endcomment %}
+    {% else %}
+    <div class="row gx-4 gx-lg-5 align-items-center my-5">
+        <div class="col-lg-7"><iframe src="https://calendar.google.com/calendar/embed?height=400&wkst=1&bgcolor=%23ffffff&ctz=Asia%2FTokyo&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=1&src=M2VhZTZhZTIwOTU4ZDZhNGQ1YmQwMjU3Yzk3YmQ1NzBjZDA0YzVjNGJlNjNlZWJjOTU3YzgyMzMwMzE0OGVmZkBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=amEuamFwYW5lc2UjaG9saWRheUBncm91cC52LmNhbGVuZGFyLmdvb2dsZS5jb20&color=%23009688&color=%23009688" style="border-width:0" width="600" height="300" frameborder="0" scrolling="no"></iframe></div>
+        <div class="col-lg-5">
+            <h1 class="font-weight-light">目標が設定されていません。</h1>
+            <p>下のボタンを押して新しい目標を設定してください。</p>
+            <a class="btn btn-primary" href="{% url 'todo:goal_config' %}">目標設定</a>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock content %}

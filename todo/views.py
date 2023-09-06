@@ -24,12 +24,17 @@ class MainView(ListView):
     model = Todos
     
     def get_queryset(self):
-        goal = Goals.objects.filter(user_id=self.request.user.pk, is_completed = False)
-        return Todos.objects.filter(goal_id=goal[0].pk)
+        goal = Goals.objects.filter(user=self.request.user, is_completed=False)
+        if goal.exists():
+            return Todos.objects.filter(goal_id=goal[0].pk)
+        else:
+            return Todos.objects.none()
     
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['goal'] = Goals.objects.filter(user_id=self.request.user.pk, is_completed = False)[0]
+        goal = Goals.objects.filter(user=self.request.user, is_completed=False)
+        if goal.exists():
+            context['goal'] = goal[0]
         return context
 
 @method_decorator(login_required, name='dispatch')
@@ -56,6 +61,15 @@ class GoalConfigView(UpdateView):
 class GoalAchievedView(TemplateView):
     '''目標達成ページ'''
     template_name = 'accomplishment.html'
+
+    def get(self, request, *args, **kwargs):
+        try:
+            goal = Goals.objects.get(user=request.user, is_completed=False)
+            goal.is_completed = True
+            goal.save()
+        except Goals.DoesNotExist:
+            pass
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
