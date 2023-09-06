@@ -1,17 +1,19 @@
 {% extends 'base.html' %}
-{% block title %}目標達成実績{% endblock title %}
+{% block title %}達成実績{% endblock title %}
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col offset-4 py-4">
-            <h1>達成した目標</h1><br>
+            <h1 class="py-4">達成した目標</h1>
             {% for goal in object_list %}
-            <h3>●{{ goal.subject }}</h3>
-            <ul>
-                {% for todo in goal.todos %}
-                <li>{{ todo.title }}: {{ todo.current }}/{{ todo.amount }}{{ todo.unit }}</li>
-                {% endfor %}
-            </ul>
+            <div class="py-4">
+                <h3>●{{ goal.subject }}</h3>
+                <ul>
+                    {% for todo in goal.todos %}
+                    <li>{{ todo.title }}: {{ todo.current }}/{{ todo.amount }}{{ todo.unit }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
             {% endfor %}
             <p><a href="{% url 'todo:main' %}" class="btn btn-primary">メインページ</a></p>
         </div>

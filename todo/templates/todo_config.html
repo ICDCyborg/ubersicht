@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}タスク設定{% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col py-4">
+            <h1>{{ goal.subject }}ために・・・</h1>
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form.until_date }} までに、{{ form.amount }} {{ form.choice_of_type }} <br>
+                {{ form.title }}<br><br>
+                コメント：<br>
+                {{ form.memo }} <br>
+                <button type="submit" class="btn btn-primary">保存</button>
+                <a href="{% url 'todo:main' %}" class="btn btn-secondary">戻る</a>
+                {% if update %}
+                <a href="#" class="btn btn-secondary">タスク完了</a>
+                <a href="#" class="btn btn-secondary">タスクの削除</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,15 +1,16 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
+from django.db import models
 from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.views.generic import TemplateView, ListView, UpdateView
 # import methoddecorator
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from .forms import GoalsForm
 
 # import reverse_lazy
 from django.urls import reverse_lazy
 
+from . import forms
 from .models import Goals, Todos, Records
 from django.urls import reverse_lazy
 # Create your views here.
@@ -40,9 +41,9 @@ class MainView(ListView):
 
 @method_decorator(login_required, name='dispatch')
 class GoalConfigView(UpdateView):
-    '''目標設定を行う'''
+    '''目標設定と更新を行う'''
     template_name = 'goal_config.html'
-    form_class = GoalsForm
+    form_class = forms.GoalsForm
     success_url = reverse_lazy('todo:main')
 
     def form_valid(self, form):
@@ -85,6 +86,7 @@ class GoalAchievedView(TemplateView):
         return context
 
 class GoalDeleteView(TemplateView):
+    '''目標の削除を行う'''
     template_name = 'done.html'
 
     def get(self, request, *args, **kwargs):
@@ -112,3 +114,14 @@ class AchievementView(ListView):
             todos = Todos.objects.filter(goal=goal)
             goal.todos = todos
         return queryset
+
+class TodoConfigView(UpdateView):
+    '''Todoの作成と更新を行う'''
+    template_name = 'todo_config.html'
+    model = Todos
+    form_class = forms.TodoForm
+    success_url = reverse_lazy('todo:main')
+    # fields = ("title", "memo", "image", "timer", "amount", "current", "type")
+
+    def get_object(self, queryset: QuerySet[Any] | None = ...):
+        return Todos.objects.get(pk=self.kwargs['pk'])

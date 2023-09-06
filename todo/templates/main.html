@@ -56,7 +56,7 @@
                     <img src="{{ todo.image.url }}" alt="" style="max-width: 100%;">
                     {% endif %}
                 </div>
-                <div class="card-footer"><a class="btn btn-primary btn-sm" href="#!">詳細</a></div>
+                <div class="card-footer"><a class="btn btn-primary btn-sm" href="{% url 'todo:todo_config' pk=todo.pk %}">詳細</a></div>
             </div>
         </div>
         {% endfor %}
