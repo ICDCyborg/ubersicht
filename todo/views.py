@@ -57,6 +57,12 @@ class GoalConfigView(UpdateView):
         else:
             return Goals()
     
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        active_goal = Goals.objects.filter(user=self.request.user, is_completed=False)
+        context['update'] = active_goal.exists()
+        return context
+    
 @method_decorator(login_required, name='dispatch')
 class GoalAchievedView(TemplateView):
     '''目標達成ページ'''
