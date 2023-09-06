@@ -32,6 +32,7 @@ class MainView(ListView):
         context['goal'] = Goals.objects.filter(user_id=self.request.user.pk, is_completed = False)[0]
         return context
 
+@method_decorator(login_required, name='dispatch')
 class GoalConfigView(UpdateView):
     '''目標設定を行う'''
     template_name = 'goal_config.html'
@@ -46,3 +47,14 @@ class GoalConfigView(UpdateView):
     
     def get_object(self, queryset=None):
         return Goals.objects.filter(user_id=self.request.user.pk, is_completed = False)[0]
+    
+@method_decorator(login_required, name='dispatch')
+class GoalAchievedView(TemplateView):
+    '''目標達成ページ'''
+    template_name = 'accomplishment.html'
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['title'] = '目標達成！'
+        context['congrats'] = '目標を達成しました！おめでとうございます！'
+        return context

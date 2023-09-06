@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col py-4 offset-4">
+            <h1>達成しました！</h1>
+            <p>
+                {{ congrats }}
+            </p>
+            <p>
+                {% comment %} SNSへの共有リンク {% endcomment %}
+            </p>
+            <a href="{% url 'todo:main' %}" class="btn btn-secondary">メインページへ</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}
