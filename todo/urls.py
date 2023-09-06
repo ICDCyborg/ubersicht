@@ -9,8 +9,9 @@ urlpatterns = [
     # メインページ
     path('main/', MainView.as_view(), name='main'),
     # 目標設定
-    path('goal_config', GoalConfigView.as_view(), name='goal_config'),
+    path('goal_config/', GoalConfigView.as_view(), name='goal_config'),
     # 目標達成
-    path('goal_achieved', GoalAchievedView.as_view(), name='goal_achieved'),
-    path('goal_delete', GoalDeleteView.as_view(), name='goal_delete'),
+    path('goal_achieved/', GoalAchievedView.as_view(), name='goal_achieved'),
+    path('goal_delete/', GoalDeleteView.as_view(), name='goal_delete'),
+    path('achievement/', AchievementView.as_view(), name='achievement'),
 ]

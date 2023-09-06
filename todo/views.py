@@ -1,4 +1,5 @@
 from typing import Any, Dict
+from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.views.generic import TemplateView, ListView, UpdateView
 # import methoddecorator
@@ -99,3 +100,15 @@ class GoalDeleteView(TemplateView):
         context['title'] = '目標の削除'
         context['message'] = '目標を削除しました。'
         return context
+
+class AchievementView(ListView):
+    '''目標達成実績ページのビュー'''
+    template_name = 'achievement.html'
+    model = Goals
+
+    def get_queryset(self) -> QuerySet[Any]:
+        queryset = Goals.objects.filter(user=self.request.user, is_completed=True)
+        for goal in queryset:
+            todos = Todos.objects.filter(goal=goal)
+            goal.todos = todos
+        return queryset
