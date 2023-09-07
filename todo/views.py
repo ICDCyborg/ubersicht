@@ -208,3 +208,34 @@ class RecordView(DetailView):
     template_name = 'record.html'
     model = Todos
     context_object_name = 'todo'
+
+@method_decorator(login_required, name='dispatch')
+class RecordAddView(TemplateView):
+    '''記録追加完了'''
+    template_name = 'accomplishment.html'
+
+    def get(self, request, *args, **kwargs):
+        # todoの紐づけ
+        todo_id = request.GET.get('todo')
+        todo = Todos.objects.get(pk=todo_id)
+        # numの値を取得
+        num = int(request.GET.get('num'))
+        # タスクの種類によって処理を変える
+        if todo.type == 'training':
+            # trainingの場合は加算 
+            todo.current += num
+        elif todo.type == 'exam' or todo.type == 'reading':
+            # examとreadingの場合は値を上書き
+            todo.current = num
+
+        record = Records(todo=todo, num=num)
+        record.save()
+        todo.save()
+
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['title'] = '実施記録の追加完了'
+        context['congrats'] = '目標に一歩近づきました！'
+        return context

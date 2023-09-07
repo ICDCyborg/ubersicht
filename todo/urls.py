@@ -21,4 +21,5 @@ urlpatterns = [
     path('todo_delete/<int:pk>', TodoDeleteView.as_view(), name='todo_delete'),
     path('todo/<int:pk>', TodoDetailView.as_view(), name='todo_detail'),
     path('record/<int:pk>', RecordView.as_view(), name='record'),
+    path('record/add/', RecordAddView.as_view(), name='record_add'),
 ]

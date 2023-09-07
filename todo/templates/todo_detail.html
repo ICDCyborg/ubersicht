@@ -65,7 +65,7 @@
     </form>
     <div class="row py-4">
         <div class="col">
-            <a href="" class="btn btn-secondary">進捗を記録</a>
+            <a href="{% url 'todo:record' pk=todo.pk %}" class="btn btn-secondary">進捗を記録</a>
             <a href="{% url 'todo:todo_complete' pk=todo.pk %}" class="btn btn-secondary">完了とする</a>
             <a href="{% url 'todo:todo_config' pk=todo.pk %}" class="btn btn-secondary">編集</a>
             <a href="{% url 'todo:todo_delete' pk=todo.pk %}" class="btn btn-secondary">削除</a>
