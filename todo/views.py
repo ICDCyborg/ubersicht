@@ -195,3 +195,9 @@ class TodoDeleteView(TemplateView):
         context['message'] = 'タスクを削除しました。'
         return context
 
+@method_decorator(login_required, name='dispatch')
+class TodoDetailView(DetailView):
+    '''Todoの詳細表示'''
+    template_name = 'todo_detail.html'
+    model = Todos
+    context_object_name = 'todo'
