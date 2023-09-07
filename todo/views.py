@@ -43,7 +43,7 @@ class MainView(ListView):
 class GoalConfigView(UpdateView):
     '''目標設定と更新を行う'''
     template_name = 'goal_config.html'
-    form_class = forms.GoalsForm
+    form_class = forms.GoalForm
     success_url = reverse_lazy('todo:main')
 
     def form_valid(self, form):

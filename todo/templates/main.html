@@ -43,7 +43,7 @@
                 <div class="card-body">
                     <h2 class="card-title">{{ todo.title }}</h2>
                     {% if todo.percent is not None %}
-                    <div class="progBar" style="width:100%;">
+                    <div class="progBar" style="width:100%; margin-bottom: 1em;">
                         <p class="bar card-text" style="width:{{todo.percent}}%">
                             <div style="position:relative;padding-left: 1em;">{{ todo.percent|floatformat:1 }}%</div>
                         </p>

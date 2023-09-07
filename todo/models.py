@@ -36,7 +36,8 @@ class Todos(models.Model):
     title = models.CharField(verbose_name='タイトル', max_length=50)
     from_date = models.DateField(verbose_name='作成日', auto_now_add=True)
     until_date = models.DateField(verbose_name='期日', null=True, blank=True)
-    image = models.ImageField(verbose_name='画像', null=True, blank=True)
+    image = models.ImageField(verbose_name='画像', null=True, blank=True,
+                            upload_to='todo/images/')
     timer = models.IntegerField(verbose_name='タイマー', null=True, blank=True)
     # タイプ：'task', 'training', 'exam', 'reading'
     amount = models.IntegerField(verbose_name='合計', null=True, blank=True)
