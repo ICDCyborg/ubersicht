@@ -17,4 +17,6 @@ urlpatterns = [
     # Todoの作成、編集
     path('todo_create/', TodoCreateView.as_view(), name='todo_create'),
     path('todo_config/<int:pk>', TodoConfigView.as_view(), name='todo_config'),
+    path('todo_complete/<int:pk>', TodoCompleteView.as_view(), name='todo_complete'),
+    path('todo_delete/<int:pk>', TodoDeleteView.as_view(), name='todo_delete'),
 ]

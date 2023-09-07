@@ -16,7 +16,10 @@
         height:100%;
         background-color:#FFCA28;
         overflow: visible;
-
+    }
+    .completed{
+        background-color: #aaa;
+        color: #666;
     }
 </style>
 <div class="container px-4 px-lg-5">
@@ -39,10 +42,16 @@
     <div class="row gx-4 gx-lg-5">
         {% for todo in object_list %}
         <div class="col-md-4 mb-5">
-            <div class="card h-100">
+            <div class="card h-100 {% if todo.state == 2 %}completed{% endif %}">
                 <div class="card-body">
                     <h2 class="card-title">{{ todo.title }}</h2>
-                    {% if todo.percent is not None %}
+                    {% if todo.state == 2 %}
+                    <div class="progBar" style="width:100%; margin-bottom: 1em;">
+                        <p class="bar card-text" style="width:100%">
+                            <div style="position:relative;padding-left: 1em;">完了済み</div>
+                        </p>
+                    </div>
+                    {% elif todo.percent is not None %}
                     <div class="progBar" style="width:100%; margin-bottom: 1em;">
                         <p class="bar card-text" style="width:{{todo.percent}}%">
                             <div style="position:relative;padding-left: 1em;">{{ todo.percent|floatformat:1 }}%</div>

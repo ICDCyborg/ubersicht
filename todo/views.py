@@ -4,7 +4,8 @@ from django.db.models.query import QuerySet
 from django.forms.models import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import TemplateView, ListView, UpdateView, CreateView
+from django.views.generic import TemplateView, ListView, UpdateView, \
+    CreateView, DeleteView, DetailView
 # import methoddecorator
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -30,7 +31,7 @@ class MainView(ListView):
     def get_queryset(self):
         goal = Goals.objects.filter(user=self.request.user, is_completed=False)
         if goal.exists():
-            return Todos.objects.filter(goal_id=goal[0].pk)
+            return Todos.objects.filter(goal_id=goal[0].pk).order_by('state')
         else:
             return Todos.objects.none()
     
@@ -119,38 +120,8 @@ class AchievementView(ListView):
             goal.todos = todos
         return queryset
 
-@method_decorator(login_required, name='dispatch')
-class TodoConfigView(UpdateView):
-    '''Todoの作成と更新を行う'''
-    template_name = 'todo_config.html'
-    # model = Todos
-    form_class = forms.TodoForm
-    success_url = reverse_lazy('todo:main')
-
-    def form_valid(self, form):
-        postdata = form.save(commit=False)
-        # 現在のgoalを取得して紐づける
-        try:
-            goal = Goals.objects.get(user=self.request.user, is_completed=False)
-            postdata.goal = goal
-        except Goals.DoesNotExist:
-            return super().form_invalid(form)
-        print('image:'+str(postdata.image))
-        postdata.save()
-        return super().form_valid(form)
-
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context['goal'] = Todos.objects.get(pk=self.kwargs['pk']).goal
-        context['update'] = True
-        return context
-
-    def get_object(self, queryset: QuerySet[Any] | None = ...):
-        # typeの数値をCustomChoiceWidgetのデータに変換する
-        return Todos.objects.get(pk=self.kwargs['pk'])
-
-@method_decorator(login_required, name='dispatch')
-class TodoCreateView(CreateView):
+class TodoFormBaseView:
+    '''TodoFormを使うベースクラス'''
     template_name = 'todo_config.html'
     form_class = forms.TodoForm
     success_url = reverse_lazy('todo:main')
@@ -162,9 +133,9 @@ class TodoCreateView(CreateView):
         context['goal'] = goal
         return context
 
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+    def form_valid(self, form):
         postdata = form.save(commit=False)
-        # 現在のgoalに紐づける
+        # 現在のgoalを取得して紐づける
         try:
             goal = Goals.objects.get(user=self.request.user, is_completed=False)
             postdata.goal = goal
@@ -172,3 +143,55 @@ class TodoCreateView(CreateView):
             return super().form_invalid(form)
         postdata.save()
         return super().form_valid(form)
+
+@method_decorator(login_required, name='dispatch')
+class TodoConfigView(TodoFormBaseView, UpdateView):
+    '''Todo更新ページ'''
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['update'] = True
+        return context
+
+    def get_object(self, queryset: QuerySet[Any] | None = ...):
+        # typeの数値をCustomChoiceWidgetのデータに変換する
+        return Todos.objects.get(pk=self.kwargs['pk'])
+
+@method_decorator(login_required, name='dispatch')
+class TodoCreateView(TodoFormBaseView, CreateView):
+    '''Todo作成ページ'''
+    ...
+
+@method_decorator(login_required, name='dispatch')
+class TodoCompleteView(TemplateView):
+    '''Todoを完了済みにする'''
+    template_name = 'accomplishment.html'
+
+    def get(self, request, *args, **kwargs):
+        todo = Todos.objects.get(pk=self.kwargs['pk'])
+        todo.state = 2
+        todo.save()
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'タスク完了'
+        context['congrats'] = 'タスクを完了し、目標に近づきました！'
+        return context
+
+@method_decorator(login_required, name='dispatch')
+class TodoDeleteView(TemplateView):
+    '''Todoを削除する'''
+    template_name = 'done.html'
+
+    def get(self, request, *args, **kwargs):
+        todo = Todos.objects.get(pk=self.kwargs['pk'])
+        todo.delete()
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'タスクの削除'
+        context['message'] = 'タスクを削除しました。'
+        return context
+
