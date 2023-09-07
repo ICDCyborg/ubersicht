@@ -43,7 +43,7 @@ class Todos(models.Model):
     amount = models.IntegerField(verbose_name='合計', null=True, blank=True)
     type = models.CharField(verbose_name='タイプ', default='task', max_length=20,
                             choices=TypeChoices.choices)
-    current = models.IntegerField(verbose_name='進捗', null=True, blank=True)
+    current = models.IntegerField(verbose_name='進捗', default=0)
     memo = models.TextField(verbose_name='メモ', null=True, blank=True)
     # 状態：ピン留めなら０、通常は１、完了済みは２
     state = models.IntegerField(verbose_name='状態', default=1)

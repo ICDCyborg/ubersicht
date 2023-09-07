@@ -14,5 +14,7 @@ urlpatterns = [
     path('goal_achieved/', GoalAchievedView.as_view(), name='goal_achieved'),
     path('goal_delete/', GoalDeleteView.as_view(), name='goal_delete'),
     path('achievement/', AchievementView.as_view(), name='achievement'),
+    # Todoの作成、編集
+    path('todo_create/', TodoCreateView.as_view(), name='todo_create'),
     path('todo_config/<int:pk>', TodoConfigView.as_view(), name='todo_config'),
 ]

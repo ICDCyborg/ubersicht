@@ -138,5 +138,5 @@ EMAIL_USE_TLS = env('EMAIL_USE_TLS')
 LOGIN_URL = 'accounts:login'
 
 # メディア関連
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'

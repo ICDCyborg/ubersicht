@@ -1,8 +1,10 @@
 from typing import Any, Dict, Optional
 from django.db import models
 from django.db.models.query import QuerySet
+from django.forms.models import BaseModelForm
+from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import TemplateView, ListView, UpdateView
+from django.views.generic import TemplateView, ListView, UpdateView, CreateView
 # import methoddecorator
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -121,28 +123,52 @@ class AchievementView(ListView):
 class TodoConfigView(UpdateView):
     '''Todoの作成と更新を行う'''
     template_name = 'todo_config.html'
-    model = Todos
+    # model = Todos
     form_class = forms.TodoForm
     success_url = reverse_lazy('todo:main')
 
     def form_valid(self, form):
-        # 現在のgoalを取得して紐づける
-        # CustomChoiceWidgetのデータを数値に変換して格納する
         postdata = form.save(commit=False)
+        # 現在のgoalを取得して紐づける
         try:
             goal = Goals.objects.get(user=self.request.user, is_completed=False)
             postdata.goal = goal
         except Goals.DoesNotExist:
             return super().form_invalid(form)
-        postdata.user = self.request.user
+        print('image:'+str(postdata.image))
         postdata.save()
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['goal'] = Todos.objects.get(pk=self.kwargs['pk']).goal
+        context['update'] = True
         return context
 
     def get_object(self, queryset: QuerySet[Any] | None = ...):
         # typeの数値をCustomChoiceWidgetのデータに変換する
         return Todos.objects.get(pk=self.kwargs['pk'])
+
+@method_decorator(login_required, name='dispatch')
+class TodoCreateView(CreateView):
+    template_name = 'todo_config.html'
+    form_class = forms.TodoForm
+    success_url = reverse_lazy('todo:main')
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        # 現在のgoalの情報をcontextに埋め込む
+        context = super().get_context_data(**kwargs)
+        goal = Goals.objects.get(user=self.request.user, is_completed=False)
+        context['goal'] = goal
+        return context
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        postdata = form.save(commit=False)
+        # 現在のgoalに紐づける
+        try:
+            goal = Goals.objects.get(user=self.request.user, is_completed=False)
+            postdata.goal = goal
+        except Goals.DoesNotExist:
+            return super().form_invalid(form)
+        postdata.save()
+        return super().form_valid(form)

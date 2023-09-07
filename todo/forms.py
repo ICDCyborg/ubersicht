@@ -9,7 +9,7 @@ class GoalForm(ModelForm):
         fields = ['subject', 'until_date', 'remind_at', 'memo']
 
 class TodoForm(forms.ModelForm):
-
+    # until_date = forms.DateField(widget=forms.DateInput(attrs={'autofocus'}))
     class Meta:
         model = Todos
         fields = ['title', 'until_date', 'amount', 'type', 'image', 'timer', 'memo']

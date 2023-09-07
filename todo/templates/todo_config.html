@@ -5,12 +5,12 @@
     <div class="row">
         <div class="col py-4">
             <h1 class="py-4">{{ goal.subject }}ために・・・</h1>
-            <form action="" method="post">
+            <form action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <table border=0>
                     <tr>
                         <th class="h3">期日：</th>
-                        <td>{{ form.until_date }} までに、</td>
+                        <td><input type="text" name="until_date" value="{{ form.until_date.value|date:"Y-m-d" }}" id="id_until_date" autofocus> までに、</td>
                     </tr>
                     <tr>
                         <th class="h3">目標値：</th>
@@ -27,6 +27,7 @@
                     <tr>
                         <th class="h3" style="vertical-align: top;">コメント：</th>
                         <td>{{ form.memo }}</td>
+                        {% comment %} <td><input type="text" name="memo" value="{{ form.memo.value }}" id="id_memo" height=200></td> {% endcomment %}
                     </tr>
                 </table>
                 <button type="submit" class="btn btn-primary">保存</button>
