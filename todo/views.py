@@ -201,3 +201,10 @@ class TodoDetailView(DetailView):
     template_name = 'todo_detail.html'
     model = Todos
     context_object_name = 'todo'
+
+@method_decorator(login_required, name='dispatch')
+class RecordView(DetailView):
+    '''実施記録の作成'''
+    template_name = 'record.html'
+    model = Todos
+    context_object_name = 'todo'
