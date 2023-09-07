@@ -24,6 +24,12 @@ class Goals(models.Model):
         else:
             return (self.until_date - date.today()).days
 
+class TypeChoices(models.TextChoices):
+    TASK = 'task', 'なし（タスク）'
+    TRAINING = 'training', '回（トレーニング）'
+    EXAM = 'exam', '点（テスト）'
+    READING = 'reading', 'ページ（読書）'
+
 class Todos(models.Model):
     '''ToDo管理テーブル'''
     goal = models.ForeignKey(Goals, on_delete=models.CASCADE)
@@ -32,9 +38,10 @@ class Todos(models.Model):
     until_date = models.DateField(verbose_name='期日', null=True, blank=True)
     image = models.ImageField(verbose_name='画像', null=True, blank=True)
     timer = models.IntegerField(verbose_name='タイマー', null=True, blank=True)
-    # タイプ：タスクなら０、トレーニングが１、テストが２、読書が３
-    type = models.IntegerField(verbose_name='タイプ', default=0)
+    # タイプ：'task', 'training', 'exam', 'reading'
     amount = models.IntegerField(verbose_name='合計', null=True, blank=True)
+    type = models.CharField(verbose_name='タイプ', default='task', max_length=20,
+                            choices=TypeChoices.choices)
     current = models.IntegerField(verbose_name='進捗', null=True, blank=True)
     memo = models.TextField(verbose_name='メモ', null=True, blank=True)
     # 状態：ピン留めなら０、通常は１、完了済みは２
@@ -46,13 +53,13 @@ class Todos(models.Model):
     @property
     def unit(self) -> str:
         '''タイプに合わせた単位を返す'''
-        if self.type == 0:
+        if self.type == 'task':
             return ''
-        elif self.type == 1:
+        elif self.type == 'training':
             return '回'
-        elif self.type == 2:
+        elif self.type == 'exam':
             return '点'
-        elif self.type == 3:
+        elif self.type == 'reading':
             return 'ページ'
         else:
             return ''
@@ -82,7 +89,6 @@ class Todos(models.Model):
             return None
         else:
             return self.current / self.amount * 100
-
 
 class Records(models.Model):
     '''実施記録テーブル'''

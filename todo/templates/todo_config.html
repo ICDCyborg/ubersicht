@@ -4,13 +4,27 @@
 <div class="container">
     <div class="row">
         <div class="col py-4">
-            <h1>{{ goal.subject }}ために・・・</h1>
+            <h1 class="py-4">{{ goal.subject }}ために・・・</h1>
             <form action="" method="post">
                 {% csrf_token %}
-                {{ form.until_date }} までに、{{ form.amount }} {{ form.choice_of_type }} <br>
-                {{ form.title }}<br><br>
-                コメント：<br>
-                {{ form.memo }} <br>
+                <table border=0>
+                    <tr>
+                        <th class="h3">期日：</th>
+                        <td>{{ form.until_date }} までに、</td>
+                    </tr>
+                    <tr>
+                        <th class="h3">目標値：</th>
+                        <td>{{ form.amount }} {{ form.type }}</td>
+                    </tr>
+                    <tr>
+                        <th class="h3">やる事：</th>
+                        <td>{{ form.title }}</td>
+                    </tr>
+                    <tr>
+                        <th class="h3" style="vertical-align: top;">コメント：</th>
+                        <td>{{ form.memo }}</td>
+                    </tr>
+                </table>
                 <button type="submit" class="btn btn-primary">保存</button>
                 <a href="{% url 'todo:main' %}" class="btn btn-secondary">戻る</a>
                 {% if update %}

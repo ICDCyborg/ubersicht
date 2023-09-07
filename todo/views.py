@@ -85,6 +85,7 @@ class GoalAchievedView(TemplateView):
         context['congrats'] = '目標を達成しました！おめでとうございます！'
         return context
 
+@method_decorator(login_required, name='dispatch')
 class GoalDeleteView(TemplateView):
     '''目標の削除を行う'''
     template_name = 'done.html'
@@ -103,6 +104,7 @@ class GoalDeleteView(TemplateView):
         context['message'] = '目標を削除しました。'
         return context
 
+@method_decorator(login_required, name='dispatch')
 class AchievementView(ListView):
     '''目標達成実績ページのビュー'''
     template_name = 'achievement.html'
@@ -115,13 +117,32 @@ class AchievementView(ListView):
             goal.todos = todos
         return queryset
 
+@method_decorator(login_required, name='dispatch')
 class TodoConfigView(UpdateView):
     '''Todoの作成と更新を行う'''
     template_name = 'todo_config.html'
     model = Todos
     form_class = forms.TodoForm
     success_url = reverse_lazy('todo:main')
-    # fields = ("title", "memo", "image", "timer", "amount", "current", "type")
+
+    def form_valid(self, form):
+        # 現在のgoalを取得して紐づける
+        # CustomChoiceWidgetのデータを数値に変換して格納する
+        postdata = form.save(commit=False)
+        try:
+            goal = Goals.objects.get(user=self.request.user, is_completed=False)
+            postdata.goal = goal
+        except Goals.DoesNotExist:
+            return super().form_invalid(form)
+        postdata.user = self.request.user
+        postdata.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['goal'] = Todos.objects.get(pk=self.kwargs['pk']).goal
+        return context
 
     def get_object(self, queryset: QuerySet[Any] | None = ...):
+        # typeの数値をCustomChoiceWidgetのデータに変換する
         return Todos.objects.get(pk=self.kwargs['pk'])
