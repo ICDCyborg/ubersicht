@@ -4,47 +4,50 @@
 {% block content %}
 <div class="container px-4">
     <div class="row gx-4 gx-lg-4 my-4">
-        <div class="col py-4">
+        <div class="col py-2">
             <h1>
                 {{ todo.title }}：
-                {% if todo.percent is not None and not todo.is_completed %}
-                    {{ todo.percent|floatformat:1 }}%
-                {% endif %}
             </h1>
-            {% if todo.state == 2 %}
-            <div class="progBar" style="width:100%; margin-bottom: 1em;">
+            {% if todo.is_completed %}
+            <div class="progBar" style="width:50%;">
                 <p class="bar card-text" style="width:100%; background-color: #33FF33;">
-                    <div style="position:relative;padding-left: 1em;">完了済み</div>
+                    <div class="bar-label">完了済み</div>
                 </p>
             </div>
             {% elif todo.percent is not None %}
-            <div class="progBar" style="width:100%; margin-bottom: 1em;">
+            <div class="progBar" style="width:50%;">
                 <p class="bar card-text" style="width:{{todo.percent}}%">
-                    <div style="position:relative;padding-left: 1em;">{{ todo.percent|floatformat:1 }}%</div>
+                    <div class="bar-label">{{ todo.percent|floatformat:1 }}%</div>
                 </p>
             </div>
             {% endif %}
         </div>
     </div>
     <div class="row gx-4 gx-lg-5">
+        {% if todo.image %}
         <div class="col-md-4">
-            {% if todo.image %}
-            <div class="card">
-                <img src="{{todo.image.url}}" alt="">
+            <div class="card my-4">
+                <div class="card-body">
+                    <h3 class="card-title">画像：</h3>
+                    <img src="{{todo.image.url}}" alt="" style="max-width: 100%;">
+                </div>
             </div>
-            {% endif %}
-            {% comment %} グラフの表示 {% endcomment %}
-            {% comment %} <div class="card"></div> {% endcomment %}
-            {% comment %} <div class="card"></div> {% endcomment %}
         </div>
-    </div>
-    {% if todo.memo %}
-    <div class="row gx-4">
-        <div class="col">
-            <h3>コメント：</h3>{{todo.memo}}
+        {% endif %}
+        {% if todo.memo %}
+        <div class="col-md-4">
+            <div class="card my-4">
+                <div class="card-body">
+                    <h3 class="card-title">コメント：</h3>
+                    {{todo.memo}}
+                </div>
+            </div>
         </div>
+        {% endif %}
+        {% comment %} グラフの表示 {% endcomment %}
+        {% comment %} <div class="card"></div> {% endcomment %}
+        {% comment %} <div class="card"></div> {% endcomment %}
     </div>
-    {% endif %}
     {% if not todo.is_completed %}
     <form action="timer/" method="post" class="my-4">
         {% csrf_token %}

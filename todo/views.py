@@ -241,9 +241,21 @@ class RecordAddView(TemplateView):
         return context
 
 @method_decorator(login_required, name='dispatch')
-class RecordDeleteView(ListView):
-    '''記録の削除を行う'''
-    template_name = 'record_delete.html'
+class RecordListView(ListView):
+    '''記録の一覧ページ'''
+    template_name = 'record_list.html'
     model = Records
     context_object_name = 'records'
 
+    def get_queryset(self) -> QuerySet[Any]:
+        todo=Todos.objects.get(pk=self.kwargs['pk'])
+        return Records.objects.filter(todo=todo)
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['todo'] = Todos.objects.get(pk=self.kwargs['pk'])
+        return context
+
+@method_decorator(login_required, name='dispatch')
+class RecordDeleteView(TemplateView):
+    ''''''

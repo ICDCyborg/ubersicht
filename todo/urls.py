@@ -21,6 +21,8 @@ urlpatterns = [
     path('todo/complete/<int:pk>', TodoCompleteView.as_view(), name='todo_complete'),
     path('todo/delete/<int:pk>', TodoDeleteView.as_view(), name='todo_delete'),
     # 実施記録の作成、閲覧、削除
-    path('record/<int:pk>', RecordView.as_view(), name='record'),
-    path('record/add/', RecordAddView.as_view(), name='record_add'),
+    path('record/add/<int:pk>', RecordView.as_view(), name='record'),
+    path('record/add/done/', RecordAddView.as_view(), name='record_add'),
+    path('record/<int:pk>', RecordListView.as_view(), name='record_list'),
+    path('record/delete/<int:pk>', RecordDeleteView.as_view(), name='record_delete'),
 ]
