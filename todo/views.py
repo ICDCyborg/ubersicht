@@ -273,3 +273,16 @@ def record_delete(request, pk):
         todo.save()
     record.delete()
     return redirect('todo:record_list', pk=record.todo.pk)
+
+@login_required
+def pin_todo(request, pk):
+    '''Todoのピン状態を切り替える'''
+    todo = Todos.objects.get(pk=pk)
+    print('pin!'+todo.title+str(todo.state))
+    if todo.state == State.PINNED.value:
+        todo.state = State.NORMAL.value
+    elif todo.state == State.NORMAL.value:
+        todo.state = State.PINNED.value
+    print('pin!!!'+todo.title+str(todo.state))
+    todo.save()
+    return redirect('todo:main')

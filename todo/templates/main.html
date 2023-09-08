@@ -2,6 +2,12 @@
 {% load static %}
 {% block title %}メインページ{% endblock title %}
 {% block content %}
+<style>
+    .heart{
+        font: 1.5em bold sans-serif;
+        text-decoration: none;
+    }
+</style>
 <!-- Page Content-->
 <div class="container px-4 px-lg-5">
     <!-- Heading Row-->
@@ -47,8 +53,13 @@
                     <img src="{{ todo.image.url }}" alt="" style="max-width: 100%;">
                     {% endif %}
                 </div>
-                <div class="card-footer">
+                <div class="d-flex card-footer justify-content-between">
                     <a class="btn btn-primary btn-sm" href="{% url 'todo:todo_detail' pk=todo.pk %}">詳細</a>
+                    {% if todo.is_pinned and not todo.is_completed %}
+                    <a href="{% url 'todo:pin' pk=todo.pk %}" alt="ピン留め" class="heart" style="color: red;">&#9829;</a>
+                    {% elif not todo.is_completed %}
+                    <a href="{% url 'todo:pin' pk=todo.pk %}" alt="ピン留め" class="heart" style="color: black;">&#9825;</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

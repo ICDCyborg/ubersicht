@@ -20,6 +20,7 @@ urlpatterns = [
     path('todo/config/<int:pk>', TodoConfigView.as_view(), name='todo_config'),
     path('todo/complete/<int:pk>', TodoCompleteView.as_view(), name='todo_complete'),
     path('todo/delete/<int:pk>', TodoDeleteView.as_view(), name='todo_delete'),
+    path('todo/pin/<int:pk>', pin_todo, name='pin'),
     # 実施記録の作成、閲覧、削除
     path('record/add/<int:pk>', RecordView.as_view(), name='record'),
     path('record/add/done/', RecordAddView.as_view(), name='record_add'),
