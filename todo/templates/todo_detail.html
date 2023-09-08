@@ -7,6 +7,9 @@
         <div class="col py-2">
             <h1>
                 {{ todo.title }}：
+                {% if todo.amount is not None %}
+                {{ todo.current }} / {{ todo.amount }}{{ todo.unit }}
+                {% endif %}
             </h1>
             {% if todo.is_completed %}
             <div class="progBar" style="width:50%;">
@@ -23,6 +26,17 @@
             {% endif %}
         </div>
     </div>
+    {% if not todo.is_completed %}
+    <div class="row">
+        <h3>今日の進捗は？：</h3>
+        <form action="{% url 'todo:record_add' %}" method="get">
+            {% csrf_token %}
+            <input type="hidden" name="todo" id="id_todo" value="{{todo.pk}}">
+            <input type="number" name="num" id="id_num" autofocus>  {{ todo.activity }} 
+            <button type="submit" class="btn btn-primary btn-sm">保存</button>
+        </form>
+    </div>
+    {% endif %}
     <div class="row gx-4 gx-lg-5">
         {% if todo.image %}
         <div class="col-md-4">
@@ -53,13 +67,14 @@
         {% csrf_token %}
         <input type="number" name="timer" value={{todo.timer}} id="id_timer">
         分タイマー
-        <button type="submit" class="btn btn-secondary">スタート</button>
+        <button type="submit" class="btn btn-secondary btn-sm">スタート</button>
     </form>
     {% endif %}
     <div class="row py-4">
         <div class="col">
+            <a href="{% url 'todo:record_list' pk=todo.pk %}" class="btn btn-secondary">記録一覧</a>
             {% if not todo.is_completed %}
-            <a href="{% url 'todo:record' pk=todo.pk %}" class="btn btn-secondary">進捗を記録</a>
+            {% comment %} <a href="{% url 'todo:record' pk=todo.pk %}" class="btn btn-secondary">進捗を記録</a> {% endcomment %}
             <a href="{% url 'todo:todo_complete' pk=todo.pk %}" class="btn btn-secondary">完了とする</a>
             <a href="{% url 'todo:todo_config' pk=todo.pk %}" class="btn btn-secondary">編集</a>
             <a href="{% url 'todo:todo_delete' pk=todo.pk %}" class="btn btn-secondary">削除</a>

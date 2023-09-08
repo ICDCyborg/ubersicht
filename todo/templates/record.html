@@ -6,13 +6,13 @@
     <div class="row py-4">
         <div class="col">
             <h1>{{ todo.title }}：今日の進捗は？</h1>
-            <form action="add/" method="get">
+            <form action="done/" method="get">
                 {% csrf_token %}
                 <input type="hidden" name="todo" id="id_todo" value="{{todo.pk}}">
                 <input type="number" name="num" id="id_num" autofocus> : {{ todo.unit }} <br><br>
                 <button type="submit" class="btn btn-primary">保存</button>
                 <a href="{% url 'todo:todo_detail' pk=todo.pk %}" class="btn btn-secondary">戻る</a>
-                <a href="" class="btn btn-secondary">記録の削除</a>
+                <a href="{% url 'todo:record_list' pk=todo.pk %}" class="btn btn-secondary">記録の削除</a>
             </form>
         </div>
     </div>

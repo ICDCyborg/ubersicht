@@ -12,10 +12,12 @@ from django.utils.decorators import method_decorator
 
 # import reverse_lazy
 from django.urls import reverse_lazy
+# import redirect from django lib
+from django.shortcuts import redirect
 
 from . import forms
 from .models import Goals, Todos, Records, State
-from django.urls import reverse_lazy
+
 # Create your views here.
 
 class IndexView(TemplateView):
@@ -256,6 +258,18 @@ class RecordListView(ListView):
         context['todo'] = Todos.objects.get(pk=self.kwargs['pk'])
         return context
 
-@method_decorator(login_required, name='dispatch')
-class RecordDeleteView(TemplateView):
-    ''''''
+@login_required
+def record_delete(request, pk):
+    '''実施記録の削除'''
+    record = Records.objects.get(pk=pk)
+    # Todoのcurrentの値を更新
+    todo = record.todo
+    if todo.type == 'training':
+        todo.current -= record.num
+        todo.save()
+    elif todo.type == 'exam' or todo.type == 'reading':
+        latest_record = Records.objects.filter(todo=todo).exclude(pk=record.pk).latest('done_at')
+        todo.current = latest_record.num
+        todo.save()
+    record.delete()
+    return redirect('todo:record_list', pk=record.todo.pk)

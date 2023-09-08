@@ -32,6 +32,7 @@ class TypeChoices(models.TextChoices):
     READING = 'reading', 'ページ（読書）'
 
 class State(Enum):
+    '''Todoの状態（Todos.state）'''
     PINNED = 0
     NORMAL = 1
     COMPLETED = 2
@@ -52,7 +53,7 @@ class Todos(models.Model):
     current = models.IntegerField(verbose_name='進捗', default=0)
     memo = models.TextField(verbose_name='メモ', null=True, blank=True)
     # 状態：ピン留めなら０、通常は１、完了済みは２
-    state = models.IntegerField(verbose_name='状態', default=State.NORMAL)
+    state = models.IntegerField(verbose_name='状態', default=State.NORMAL.value)
 
     def __str__(self) -> str:
         return self.title
@@ -68,6 +69,20 @@ class Todos(models.Model):
             return '点'
         elif self.type == 'reading':
             return 'ページ'
+        else:
+            return ''
+        
+    @property
+    def activity(self) -> str:
+        '''タイプに合わせた単位を返す'''
+        if self.type == 'task':
+            return ''
+        elif self.type == 'training':
+            return '回やった'
+        elif self.type == 'exam':
+            return '点取れた'
+        elif self.type == 'reading':
+            return 'ページまで読んだ'
         else:
             return ''
     
