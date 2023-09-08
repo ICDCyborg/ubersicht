@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}記録の一覧{% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>{{ todo.title }}：記録の一覧</h1>
+            {% for record in records %}
+            <a href="" class="btn btn-secondary">削除</a>
+            <div class="py-2">{{ record.done_at }}: {{ record.num }}{{ todo.unit }}</div>
+            {% endfor %}
+            
+            <p><a href="{% url 'todo:main' %}" class="btn btn-primary">メインページ</a></p>
+        </div>
+    </div>
+</div>
+{% endblock content %}

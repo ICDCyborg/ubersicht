@@ -13,6 +13,25 @@
         <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
     </head>
     <body>
+        <style>
+            .progBar{
+                height:24px;
+                background-color:#ececec;
+                position:relative;
+                border-radius:10px;
+                overflow: hidden;
+            }
+            .progBar .bar{
+                position:absolute;
+                height:100%;
+                background-color:#FFD700;
+                overflow: visible;
+            }
+            .completed{
+                background-color: #CCC;
+                color: #666;
+            }
+        </style>
         <!-- Responsive navbar-->
         <nav class="navbar navbar-expand-md navbar-dark bg-dark">
             <div class="container">

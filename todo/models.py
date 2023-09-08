@@ -1,6 +1,7 @@
 from django.db import models
 from accounts.models import CustomUser
 from datetime import datetime, date, timedelta
+from enum import Enum
 
 # Create your models here.
 class Goals(models.Model):
@@ -30,6 +31,11 @@ class TypeChoices(models.TextChoices):
     EXAM = 'exam', '点（テスト）'
     READING = 'reading', 'ページ（読書）'
 
+class State(Enum):
+    PINNED = 0
+    NORMAL = 1
+    COMPLETED = 2
+
 class Todos(models.Model):
     '''ToDo管理テーブル'''
     goal = models.ForeignKey(Goals, on_delete=models.CASCADE)
@@ -39,14 +45,14 @@ class Todos(models.Model):
     image = models.ImageField(verbose_name='画像', null=True, blank=True,
                             upload_to='todo/images/')
     timer = models.IntegerField(verbose_name='タイマー', null=True, blank=True)
-    # タイプ：'task', 'training', 'exam', 'reading'
     amount = models.IntegerField(verbose_name='合計', null=True, blank=True)
+    # タイプ：'task', 'training', 'exam', 'reading'
     type = models.CharField(verbose_name='タイプ', default='task', max_length=20,
                             choices=TypeChoices.choices)
     current = models.IntegerField(verbose_name='進捗', default=0)
     memo = models.TextField(verbose_name='メモ', null=True, blank=True)
     # 状態：ピン留めなら０、通常は１、完了済みは２
-    state = models.IntegerField(verbose_name='状態', default=1)
+    state = models.IntegerField(verbose_name='状態', default=State.NORMAL)
 
     def __str__(self) -> str:
         return self.title
@@ -66,14 +72,14 @@ class Todos(models.Model):
             return ''
     
     @property
-    def pinned(self) -> bool:
+    def is_pinned(self) -> bool:
         '''ピン留めされているかどうか'''
-        return self.state == 0
+        return State(self.state) == State.PINNED
     
     @property
-    def completed(self) -> bool:
+    def is_completed(self) -> bool:
         '''完了済みかどうか'''
-        return self.state == 2
+        return State(self.state) == State.COMPLETED
     
     @property
     def days_left(self) -> int:
@@ -96,6 +102,7 @@ class Records(models.Model):
     todo = models.ForeignKey(Todos, on_delete=models.CASCADE)
     done_at = models.DateTimeField(verbose_name='日時', auto_now_add=True)
     num = models.IntegerField(verbose_name='数量', null=True, blank=True)
+    memo = models.TextField(verbose_name='メモ', null=True, blank=True, max_length=200)
 
     def __str__(self) -> str:
         return self.todo.title + ' ' + str(self.done_at) + ' ' + str(self.num) + self.todo.unit

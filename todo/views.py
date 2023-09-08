@@ -14,7 +14,7 @@ from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
 
 from . import forms
-from .models import Goals, Todos, Records
+from .models import Goals, Todos, Records, State
 from django.urls import reverse_lazy
 # Create your views here.
 
@@ -169,7 +169,7 @@ class TodoCompleteView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         todo = Todos.objects.get(pk=self.kwargs['pk'])
-        todo.state = 2
+        todo.state = State.COMPLETED.value
         todo.save()
         return super().get(request, *args, **kwargs)
 
@@ -239,3 +239,11 @@ class RecordAddView(TemplateView):
         context['title'] = '実施記録の追加完了'
         context['congrats'] = '目標に一歩近づきました！'
         return context
+
+@method_decorator(login_required, name='dispatch')
+class RecordDeleteView(ListView):
+    '''記録の削除を行う'''
+    template_name = 'record_delete.html'
+    model = Records
+    context_object_name = 'records'
+

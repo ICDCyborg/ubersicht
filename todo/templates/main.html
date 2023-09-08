@@ -3,25 +3,6 @@
 {% block title %}メインページ{% endblock title %}
 {% block content %}
 <!-- Page Content-->
-<style>
-    .progBar{
-        height:24px;
-        background-color:#ececec;
-        position:relative;
-        border-radius:10px;
-        overflow: hidden;
-    }
-    .progBar .bar{
-        position:absolute;
-        height:100%;
-        background-color:#FFCA28;
-        overflow: visible;
-    }
-    .completed{
-        background-color: #aaa;
-        color: #666;
-    }
-</style>
 <div class="container px-4 px-lg-5">
     <!-- Heading Row-->
     {% comment %} 目標が設定されている場合 {% endcomment %}
@@ -32,22 +13,23 @@
             <h1 class="font-weight-light">{{ goal.until_date| date:'m月d日' }}までに{{ goal.subject }}</h1>
             <p>{{ goal.memo }}</p>
             <a class="btn btn-primary" href="{% url 'todo:goal_config' %}">目標設定</a>
+            <!-- Call to Action-->
+            <div class="card text-white bg-secondary my-2 py-0 text-center">
+                <div class="card-body"><h3 class="text-white m-0">期限まであと{{ goal.days_left}}日！！</h3></div>
+            </div>
         </div>
-    </div>
-    <!-- Call to Action-->
-    <div class="card text-white bg-secondary my-2 py-0 text-center">
-        <div class="card-body"><h3 class="text-white m-0">期限まであと{{ goal.days_left}}日！！</h3></div>
     </div>
     <!-- Content Row-->
     <div class="row gx-4 gx-lg-5">
         {% for todo in object_list %}
         <div class="col-md-4 mb-5">
-            <div class="card h-100 {% if todo.state == 2 %}completed{% endif %}">
+            <div class="card h-100 {% if todo.is_completed %}completed{% endif %}">
                 <div class="card-body">
                     <h2 class="card-title">{{ todo.title }}</h2>
-                    {% if todo.state == 2 %}
+                    {% if todo.is_completed %}
+                    {% comment %} 完了済みのタスク {% endcomment %}
                     <div class="progBar" style="width:100%; margin-bottom: 1em;">
-                        <p class="bar card-text" style="width:100%">
+                        <p class="bar card-text" style="width:100%; background-color: #33FF33;">
                             <div style="position:relative;padding-left: 1em;">完了済み</div>
                         </p>
                     </div>

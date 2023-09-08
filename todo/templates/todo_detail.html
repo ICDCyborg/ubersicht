@@ -2,32 +2,18 @@
 {% load static %}
 {% block title %}タスク詳細{% endblock title %}
 {% block content %}
-<style>
-    .progBar{
-        height:24px;
-        background-color:#ececec;
-        position:relative;
-        border-radius:10px;
-        overflow: hidden;
-    }
-    .progBar .bar{
-        position:absolute;
-        height:100%;
-        background-color:#FFCA28;
-        overflow: visible;
-    }
-    .completed{
-        background-color: #aaa;
-        color: #666;
-    }
-</style>
 <div class="container px-4">
     <div class="row gx-4 gx-lg-4 my-4">
         <div class="col py-4">
-            <h1>{{ todo.title }}：{{ todo.percent|floatformat:1 }}%</h1>
+            <h1>
+                {{ todo.title }}：
+                {% if todo.percent is not None and not todo.is_completed %}
+                    {{ todo.percent|floatformat:1 }}%
+                {% endif %}
+            </h1>
             {% if todo.state == 2 %}
             <div class="progBar" style="width:100%; margin-bottom: 1em;">
-                <p class="bar card-text" style="width:100%">
+                <p class="bar card-text" style="width:100%; background-color: #33FF33;">
                     <div style="position:relative;padding-left: 1em;">完了済み</div>
                 </p>
             </div>
@@ -42,33 +28,39 @@
     </div>
     <div class="row gx-4 gx-lg-5">
         <div class="col-md-4">
+            {% if todo.image %}
             <div class="card">
-                {% if todo.image %}
                 <img src="{{todo.image.url}}" alt="">
-                {% endif %}
             </div>
+            {% endif %}
             {% comment %} グラフの表示 {% endcomment %}
-            <div class="card"></div>
-            <div class="card"></div>
+            {% comment %} <div class="card"></div> {% endcomment %}
+            {% comment %} <div class="card"></div> {% endcomment %}
         </div>
     </div>
+    {% if todo.memo %}
     <div class="row gx-4">
         <div class="col">
             <h3>コメント：</h3>{{todo.memo}}
         </div>
     </div>
+    {% endif %}
+    {% if not todo.is_completed %}
     <form action="timer/" method="post" class="my-4">
         {% csrf_token %}
         <input type="number" name="timer" value={{todo.timer}} id="id_timer">
         分タイマー
         <button type="submit" class="btn btn-secondary">スタート</button>
     </form>
+    {% endif %}
     <div class="row py-4">
         <div class="col">
+            {% if not todo.is_completed %}
             <a href="{% url 'todo:record' pk=todo.pk %}" class="btn btn-secondary">進捗を記録</a>
             <a href="{% url 'todo:todo_complete' pk=todo.pk %}" class="btn btn-secondary">完了とする</a>
             <a href="{% url 'todo:todo_config' pk=todo.pk %}" class="btn btn-secondary">編集</a>
             <a href="{% url 'todo:todo_delete' pk=todo.pk %}" class="btn btn-secondary">削除</a>
+            {% endif %}
             <a href="{% url 'todo:main' %}" class="btn btn-secondary">戻る</a>
         </div>
     </div>
