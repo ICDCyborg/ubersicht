@@ -215,25 +215,17 @@ class TodoDetailView(DetailView):
         x = [date.today() - timedelta(days=dy) for dy in range(6, -1, -1)]
         y = []
         if self.object.type == 'training':
-            # currentから一日分ずつ引き算することでグラフの値を産出
+            # currentから一日分ずつ引き算することでグラフの値を算出
             y.append(self.object.current)
             for day in reversed(x):
                 dx = qs.filter(done_at__date=day).aggregate(models.Sum('num'))['num__sum']
                 if dx is None:
                     y.append(y[-1])
+                    y[-2] = 0
                 else:
                     y.append(y[-1]-dx)
             y.pop()
             y.reverse()
-            # y.append(0)
-            # for day in x:
-            #     dx = qs.filter(done_at__date=day).aggregate(models.Sum('num'))['num__sum']
-            #     if dx is None:
-            #         y.append(0+y[-1])
-            #     else:
-            #         y.append(dx+y[-1])
-            # y.pop(0)
-
         elif self.object.type == 'exam' or self.object.type == 'reading':
             for day in x:
                 try:
