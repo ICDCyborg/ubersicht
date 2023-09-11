@@ -30,6 +30,7 @@ class TypeChoices(models.TextChoices):
     TRAINING = 'training', '回（トレーニング）'
     EXAM = 'exam', '点（テスト）'
     READING = 'reading', 'ページ（読書）'
+    SOMETHING = 'something', 'なにか'
 
 class State(Enum):
     '''Todoの状態（Todos.state）'''

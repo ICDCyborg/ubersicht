@@ -40,7 +40,7 @@
     <div class="row gx-4 gx-lg-5">
         {% if todo.image %}
         <div class="col-md-4">
-            <div class="card my-4">
+            <div class="card h-100 my-4">
                 <div class="card-body">
                     <h3 class="card-title">画像：</h3>
                     <img src="{{todo.image.url}}" alt="" style="max-width: 100%;">
@@ -50,7 +50,7 @@
         {% endif %}
         {% if todo.memo %}
         <div class="col-md-4">
-            <div class="card my-4">
+            <div class="card h-100 my-4">
                 <div class="card-body">
                     <h3 class="card-title">コメント：</h3>
                     {{todo.memo}}
@@ -59,16 +59,17 @@
         </div>
         {% endif %}
         {% comment %} グラフの表示 {% endcomment %}
+        {% if not chart_no_data %}
         <div class="col-md-4">
-            <div class="card my-4">
+            <div class="card h-100 my-4">
                 <div class="card-body">
-                    <div class="card-title">グラフ</div>
+                    <h3 class="card-title">グラフ</h3>
                     <img style="max-width: 100%;" src="data:image/png;base64,{{ chart | safe }}">
                 </div>
             </div>
         </div>
-        {% comment %} <div class="card"></div> {% endcomment %}
-    </div>
+        {% endif %}
+    </div><br>
     {% if not todo.is_completed %}
     <form action="timer/" method="post" class="my-4">
         {% csrf_token %}
@@ -81,7 +82,6 @@
         <div class="col">
             <a href="{% url 'todo:record_list' pk=todo.pk %}" class="btn btn-secondary">記録一覧</a>
             {% if not todo.is_completed %}
-            {% comment %} <a href="{% url 'todo:record' pk=todo.pk %}" class="btn btn-secondary">進捗を記録</a> {% endcomment %}
             <a href="{% url 'todo:todo_complete' pk=todo.pk %}" class="btn btn-secondary">完了とする</a>
             <a href="{% url 'todo:todo_config' pk=todo.pk %}" class="btn btn-secondary">編集</a>
             <a href="{% url 'todo:todo_delete' pk=todo.pk %}" class="btn btn-secondary">削除</a>

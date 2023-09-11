@@ -212,6 +212,11 @@ class TodoDetailView(DetailView):
         # 今日から数えて七日前までのデータを一日ごとに集計する。
         # 累計データの場合、累計グラフにする。
         qs = Records.objects.filter(todo=self.kwargs['pk'], done_at__gte=datetime.now() - timedelta(days=7))
+        # 一週間のデータがない場合、chart_no_dataをcontextに追加して戻す
+        if not qs:
+            context = super().get_context_data(**kwargs)
+            context['chart_no_data'] = True
+            return context
         x = [date.today() - timedelta(days=dy) for dy in range(6, -1, -1)]
         y = []
         if self.object.type == 'training':
@@ -233,7 +238,6 @@ class TodoDetailView(DetailView):
                 except Records.DoesNotExist:
                     dx = 0
                 y.append(dx)
-        print(x,y)
         x_tick = [day.strftime('%m/%d') for day in x]
         chart = graph.Plot_Graph(x_tick,y, self.object.amount)
         context = super().get_context_data(**kwargs)
@@ -276,6 +280,9 @@ class RecordAddView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['title'] = '実施記録の追加完了'
         context['congrats'] = '目標に一歩近づきました！'
+        todo_id = self.request.GET.get('todo')
+        context['previous_page'] = reverse_lazy("todo:todo_detail", kwargs={'pk': todo_id})
+        context['previous_page_title'] = 'タスクページ'
         return context
 
 @method_decorator(login_required, name='dispatch')

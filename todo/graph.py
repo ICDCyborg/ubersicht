@@ -20,21 +20,21 @@ def Plot_Graph(x, y, threshold=None):
     plt.rcParams['font.family'] = 'MS Gothic'
     plt.switch_backend('AGG')
     # グラフのサイズ調整
-    plt.figure(figsize=(5, 3))
+    plt.figure(figsize=(2, 1))
     # plt.title('グラフ')
     fig, ax = plt.subplots()
     bar_width = 0.4
     bars = ax.bar(x, y, bar_width)
-    for bar in bars:
-        cx = bar.get_x() + bar.get_width() / 2
-        cy = bar.get_height()
-        radius = bar_width / 2
-        circle = Circle((cx, cy), radius, color='blue', fill=True)
-        ax.add_patch(circle)
+    # for bar in bars:
+    #     cx = bar.get_x() + bar.get_width() / 2
+    #     cy = bar.get_height()
+    #     radius = bar_width / 2
+    #     circle = Circle((cx, cy), radius, color='blue', fill=True)
+    #     ax.add_patch(circle)
     if threshold is not None:
         plt.axhline(y=threshold, color='r')
-    plt.xlabel('日付')
-    plt.ylabel('値')
+    plt.xlabel('')
+    plt.ylabel('')
     plt.xticks(rotation=45)
     plt.tight_layout()
     graph = Output_Graph()

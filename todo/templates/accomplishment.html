@@ -10,7 +10,11 @@
             </p>
             <p>
                 {% comment %} SNSへの共有リンク {% endcomment %}
+                <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="{{ congrats }}" data-url="{% url 'todo:index' %}" data-hashtags="ubersicht" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </p>
+            {% if previous_page %}
+            <a href="{{previous_page}}" class="btn btn-primary">{{previous_page_title}}へ</a>
+            {% endif %}
             <a href="{% url 'todo:main' %}" class="btn btn-secondary">メインページへ</a>
         </div>
     </div>
