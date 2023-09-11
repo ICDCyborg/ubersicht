@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/timer.css' %}">
+<style>
+    /* 枠のスタイルを追加 */
+    #timer-wrapper {
+        border: 5px solid #333;
+        border-radius: 10px;
+        padding: 10px;
+        text-align: center;
+        background-color: white;
+        width: 300px;
+        margin: 20px auto;
+    }
+</style>
+{% endblock style %}
+{% block content %}
+<div id="timer-wrapper">
+    <div id="timer">00:00</div>
+    <button id="start">Start</button>
+    <button id="pause">Pause</button>
+</div>
+<div style="margin: 30px auto; width:200px;">
+    <a href="{% url 'todo:main' %}" class="btn btn-secondary">メインページへ</a>
+</div>
+
+<audio id="alarm" src="{% static 'sound/Clock-Alarm03-01(Mid-Loop).mp3' %}" preload="auto"></audio>
+<script src="{% static 'js/timer.js' %}"></script>
+{% endblock content %}

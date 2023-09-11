@@ -71,7 +71,7 @@
         {% endif %}
     </div><br>
     {% if not todo.is_completed %}
-    <form action="timer/" method="post" class="my-4">
+    <form action="{% url 'todo:timer' %}" method="get" class="my-4">
         {% csrf_token %}
         <input type="number" name="timer" value={{todo.timer}} id="id_timer">
         分タイマー

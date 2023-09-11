@@ -26,4 +26,5 @@ urlpatterns = [
     path('record/add/done/', RecordAddView.as_view(), name='record_add'),
     path('record/<int:pk>', RecordListView.as_view(), name='record_list'),
     path('record/delete/<int:pk>', record_delete, name='record_delete'),
+    path('timer/', TimerView.as_view(), name='timer'),
 ]

@@ -329,3 +329,7 @@ def pin_todo(request, pk):
     print('pin!!!'+todo.title+str(todo.state))
     todo.save()
     return redirect('todo:main')
+
+class TimerView(TemplateView):
+    template_name = 'timer.html'
+    
