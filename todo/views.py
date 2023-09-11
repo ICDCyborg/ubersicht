@@ -15,6 +15,8 @@ from django.urls import reverse_lazy
 # import redirect from django lib
 from django.shortcuts import redirect
 
+from datetime import date, datetime, timedelta
+
 from . import forms
 from .models import Goals, Todos, Records, State
 
@@ -203,6 +205,48 @@ class TodoDetailView(DetailView):
     template_name = 'todo_detail.html'
     model = Todos
     context_object_name = 'todo'
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        from . import graph
+        # グラフの取得
+        # 今日から数えて七日前までのデータを一日ごとに集計する。
+        # 累計データの場合、累計グラフにする。
+        qs = Records.objects.filter(todo=self.kwargs['pk'], done_at__gte=datetime.now() - timedelta(days=7))
+        x = [date.today() - timedelta(days=dy) for dy in range(6, -1, -1)]
+        y = []
+        if self.object.type == 'training':
+            # currentから一日分ずつ引き算することでグラフの値を産出
+            y.append(self.object.current)
+            for day in reversed(x):
+                dx = qs.filter(done_at__date=day).aggregate(models.Sum('num'))['num__sum']
+                if dx is None:
+                    y.append(y[-1])
+                else:
+                    y.append(y[-1]-dx)
+            y.pop()
+            y.reverse()
+            # y.append(0)
+            # for day in x:
+            #     dx = qs.filter(done_at__date=day).aggregate(models.Sum('num'))['num__sum']
+            #     if dx is None:
+            #         y.append(0+y[-1])
+            #     else:
+            #         y.append(dx+y[-1])
+            # y.pop(0)
+
+        elif self.object.type == 'exam' or self.object.type == 'reading':
+            for day in x:
+                try:
+                    dx = qs.filter(done_at__date=day).latest('done_at').num
+                except Records.DoesNotExist:
+                    dx = 0
+                y.append(dx)
+        print(x,y)
+        x_tick = [day.strftime('%m/%d') for day in x]
+        chart = graph.Plot_Graph(x_tick,y, self.object.amount)
+        context = super().get_context_data(**kwargs)
+        context['chart'] = chart
+        return context
 
 @method_decorator(login_required, name='dispatch')
 class RecordView(DetailView):
