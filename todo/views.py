@@ -12,7 +12,7 @@ from django.utils.decorators import method_decorator
 
 # import reverse_lazy
 from django.urls import reverse_lazy
-# import redirect from django lib
+# import redirect
 from django.shortcuts import redirect
 
 from datetime import date, datetime, timedelta
@@ -54,9 +54,15 @@ class GoalConfigView(UpdateView):
     success_url = reverse_lazy('todo:main')
 
     def form_valid(self, form):
+        from . import mail
         postdata = form.save(commit=False)
         postdata.user = self.request.user
         postdata.save()
+        print(postdata.remind_at)
+        if postdata.remind_at:
+            mail.MailScheduler.schedule_email_start(self.request.user.pk)
+        else:
+            mail.MailScheduler.schedule_email_stop(self.request.user.pk)
         return super().form_valid(form)
     
     def get_object(self, queryset=None):
@@ -82,6 +88,9 @@ class GoalAchievedView(TemplateView):
             goal = Goals.objects.get(user=request.user, is_completed=False)
             goal.is_completed = True
             goal.save()
+            if goal.remind_at:
+                from . import mail
+                mail.MailScheduler.schedule_email_stop(request.user.pk)
         except Goals.DoesNotExist:
             pass
         return super().get(request, *args, **kwargs)
@@ -174,6 +183,7 @@ class TodoCompleteView(TemplateView):
     def get(self, request, *args, **kwargs):
         todo = Todos.objects.get(pk=self.kwargs['pk'])
         todo.state = State.COMPLETED.value
+        todo.until_date = date.today()
         todo.save()
         return super().get(request, *args, **kwargs)
 
@@ -182,6 +192,13 @@ class TodoCompleteView(TemplateView):
         context['title'] = 'タスク完了'
         context['congrats'] = 'タスクを完了し、目標に近づきました！'
         return context
+
+class TodoDetailView(DetailView):
+    def get(self, request, *args, **kwargs):
+        todo = Todos.objects.get(pk=self.kwargs['pk'])
+        if todo.state == State.COMPLETED.value:
+            return redirect('todo:done', pk=self.kwargs['pk'])
+        return super().get(request, *args, **kwargs)
 
 @method_decorator(login_required, name='dispatch')
 class TodoDeleteView(TemplateView):
@@ -332,4 +349,4 @@ def pin_todo(request, pk):
 
 class TimerView(TemplateView):
     template_name = 'timer.html'
-    
+

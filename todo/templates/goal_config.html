@@ -15,11 +15,12 @@
             <h1>あなたの目標：</h1>
             <form action="" method="post">
                 {% csrf_token %}
-                {{ form.until_date }} までに、{{ form.subject }} <br><br>
-                <input type="checkbox" name="" id="checkbox_1">
+                {% comment %} {{ form.until_date }} {% endcomment %}
+                <input type="date" name="until_date" id="id_until_date" value={{form.until_date.value|date:"Y-m-d"}}> までに、{{ form.subject }} <br><br>
+                <input type="checkbox" name="checkbox_1" id="checkbox_1" {% if form.remind_at.value %}checked="checked"{% endif %}>
                 <label for="checkbox_1">リマインドメールを受け取る</label><br>
                 <div class="display_if_checked">
-                    {{ form.remind_at }}
+                    <input type="time" name="remind_at" id="id_remind_at" value={{ form.remind_at.value }}>
                 </div> <br><br>
                 コメント：<br>
                 {{ form.memo }} <br>
@@ -33,4 +34,20 @@
         </div>
     </div>
 </div>
+<script>
+    // チェックボックス要素を取得
+    var checkbox = document.getElementById("checkbox_1");
+    // input type="time"要素を取得
+    var timeInput = document.getElementById("id_remind_at");
+
+    // チェックボックスの状態が変更されたときのイベントリスナーを追加
+    checkbox.addEventListener("change", function() {
+        // チェックボックスがチェックされていない場合、input要素の値を空にする
+        if (!checkbox.checked) {
+            timeInput.value = "";
+        } else {
+            timeInput.value = "23:55"
+        }
+    });
+</script>
 {% endblock content %}

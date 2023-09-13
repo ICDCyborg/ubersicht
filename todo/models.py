@@ -24,6 +24,11 @@ class Goals(models.Model):
             return 0
         else:
             return (self.until_date - date.today()).days
+        
+    @property
+    def is_remind(self) -> bool:
+        '''リマインド時刻が設定されているかどうか'''
+        return bool(self.remind_at)
 
 class TypeChoices(models.TextChoices):
     TASK = 'task', 'なし（タスク）'

@@ -63,8 +63,8 @@
                         <!-- Here's the magic. Add the .animate and .slideIn classes to your .dropdown-menu and you're all set! -->
                         <div class="dropdown-menu dropdown-menu-end animate slideIn" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{% url 'accounts:user_change' pk=user.pk %}">ユーザー設定</a>
-                            <a class="dropdown-item" href="#">目標設定</a>
-                            <a class="dropdown-item" href="#">実績</a>
+                            <a class="dropdown-item" href="{% url 'todo:goal_config' %}">目標設定</a>
+                            <a class="dropdown-item" href="{% url 'todo:achievement' %}">実績</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{% url 'accounts:logout' %}">ログアウト</a>
                         </div>
