@@ -35,7 +35,7 @@ class TypeChoices(models.TextChoices):
     TRAINING = 'training', '回（トレーニング）'
     EXAM = 'exam', '点（テスト）'
     READING = 'reading', 'ページ（読書）'
-    SOMETHING = 'something', 'なにか'
+    
 
 class State(Enum):
     '''Todoの状態（Todos.state）'''
@@ -60,6 +60,7 @@ class Todos(models.Model):
     memo = models.TextField(verbose_name='メモ', null=True, blank=True)
     # 状態：ピン留めなら０、通常は１、完了済みは２
     state = models.IntegerField(verbose_name='状態', default=State.NORMAL.value)
+    # every_ndays = models.IntegerField(verbose_name='繰り返し期間', null=True, blank=True)
 
     def __str__(self) -> str:
         return self.title
@@ -127,3 +128,12 @@ class Records(models.Model):
 
     def __str__(self) -> str:
         return self.todo.title + ' ' + str(self.done_at) + ' ' + str(self.num) + self.todo.unit
+
+class JournalLine:
+    '''ジャーナルの記録'''
+
+    def __init__(self, object: models.Model, type: str, date: date):
+        self.object = object
+        self.type = type
+        self.date = date
+        return

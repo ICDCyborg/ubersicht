@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}ジャーナル{% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="card my-2">
+                <div class="card-body">
+                    <h1 class="card-title">ジャーナル</h1>
+                    {% for day in object_list %}
+                    {% if day.0.date >= today %}
+                    <h2 style="margin: 0; font-size:1em; font-weight: normal; color:#ccc;">{{day.0.date}}</h2>
+                    {% else %}
+                    <h2 style="margin: 0;">{{day.0.date}}</h2>
+                    {% endif %}
+                    <div style="padding-left: 30px;">
+                        {% for line in day %}
+                        {% if line.type == 'record' %}
+                        {% comment %} 記録 {% endcomment %}
+                        <p>
+                            ●{{ line.object.done_at|time }} {{ line.object.todo.title }} ... 
+                            {{ line.object.num }} {{ line.object.todo.activity }}
+                        </p>
+                        {% elif line.type == 'todo_start' %}
+                        <p>
+                            <strong>開始：</strong>{{ line.object.title }}
+                        </p>
+                        {% elif line.type == 'todo_end' and line.object.is_completed %}
+                        <p>
+                            <strong>完了：</strong>{{ line.object.title }}
+                        </p>
+                        {% elif line.type == 'todo_end' and not line.object.is_completed %}
+                        <p>
+                            終了予定：{{ line.object.title }}
+                        </p>
+                        {% elif line.type == 'goal_start' %}
+                        <p>
+                            <strong>開始：</strong>{{ line.object.subject }}
+                        </p>
+                        {% elif line.type == 'goal_end' and line.object.is_completed %}
+                        <p>
+                            <strong>完了：</strong>{{ line.object.subject }}
+                        </p>
+                        {% elif line.type == 'goal_end' and not line.object.is_completed %}
+                        <p>
+                            終了予定：{{ line.object.subject }}
+                        </p>
+                        {% endif %} <!-- line.typeに対する分岐 -->
+
+                        {% if line.object.memo and 'end' not in line.type %}
+                        <p style="padding-left:20px; white-space:pre;">{{ line.object.memo }}</p>
+                        {% endif %}
+                        {% endfor %} <!-- dayに対するループ -->
+                        <hr>
+                    </div>
+                    {% endfor %} <!-- object_listに対するループ -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

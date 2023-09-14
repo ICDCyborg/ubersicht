@@ -18,7 +18,7 @@ from django.shortcuts import redirect
 from datetime import date, datetime, timedelta
 
 from . import forms
-from .models import Goals, Todos, Records, State
+from .models import Goals, Todos, Records, State, JournalLine
 
 # Create your views here.
 
@@ -350,3 +350,43 @@ def pin_todo(request, pk):
 class TimerView(TemplateView):
     template_name = 'timer.html'
 
+class JournalView(TemplateView):
+    template_name = 'journal.html'
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        try:
+            goal = Goals.objects.get(user=self.request.user, is_completed=False)
+        except Goals.DoesNotExist:
+            return context
+        todos = Todos.objects.filter(goal=goal)
+        records = Records.objects.filter(todo__in=todos)
+        journals = []
+        # 記録の行
+        for record in records:
+            journals.append(JournalLine(record, "record", record.done_at.date()))
+        # タスクの行
+        for todo in todos:
+            journals.append(JournalLine(todo, "todo_start", todo.from_date))
+            journals.append(JournalLine(todo, "todo_end", todo.until_date))
+        # 目標の行
+        journals.append(JournalLine(goal, "goal_start", goal.from_date))
+        journals.append(JournalLine(goal, "goal_end", goal.until_date))
+        # 日付順に並べ替え
+        journals.sort(key=lambda x: x.date, reverse=True)
+        object_list = []
+        temp_list = []
+        # 同じ日付の行は同じイメモにつき1つのイメモにつき1行
+        for j in journals:
+            if len(temp_list) == 0:
+                temp_list.append(j)
+                continue
+            if j.date == temp_list[-1].date:
+                temp_list.append(j)
+                continue
+            object_list.append(temp_list)
+            temp_list = [j]
+        object_list.append(temp_list)
+        context['object_list'] = object_list
+        context['today'] = date.today()
+        return context
