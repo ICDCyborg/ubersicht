@@ -15,7 +15,7 @@
     }
 </style>
 {% endblock style %}
-{% block content %}
+{% block contents %}
 <div id="timer-wrapper">
     <div id="timer">00:00</div>
     <button id="start">Start</button>
@@ -27,4 +27,4 @@
 
 <audio id="alarm" src="{% static 'sound/Clock-Alarm03-01(Mid-Loop).mp3' %}" preload="auto"></audio>
 <script src="{% static 'js/timer.js' %}"></script>
-{% endblock content %}
+{% endblock contents %}

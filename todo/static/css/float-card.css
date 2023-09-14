@@ -1,0 +1,159 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+#left-pane {
+    position: relative;
+    width: 400px;
+    background-color: #333;
+    color: white;
+    /* display: flex; */
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    transition: width 0.3s;
+    overflow: hidden;
+    text-wrap: nowrap;
+}
+
+#clock {
+    background-color: #fff;
+    color: black;
+    border-radius: 30px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    width:80%;
+    overflow: hidden;
+}
+
+#right-pane {
+    flex: 1;
+    background-color: #eee;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex-basis: calc(50% - 20px);
+    box-sizing: border-box;
+    height: 200px; /* 追加 */
+    max-width: 380px;
+    min-width: 200px; /* 追加 */
+}
+
+#toggle-button {
+    position: absolute;
+    top: 20px;
+    left: 430px; /* 右端に追従するように変更 */
+    background-color: #333;
+    color: #fff;
+    padding: 10px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    z-index: 1;
+    max-width: 40px;
+}
+
+#add-card-button {
+    position: fixed;
+    bottom: 40px;
+    right: 60px;
+    background-color: #39f;
+    color: #fff;
+    border-radius: 40px;
+    /* padding: 10px; */
+    width:80px;
+    height:80px;
+    z-index: 1;
+}
+#add-card-button img{
+    position: relative;
+    top: 10px;
+    left: 10px;
+    width: 60px;
+    height: 60px;
+}
+
+@media (max-width: 768px) {
+    #left-pane {
+        width: 0;
+        overflow: hidden;
+    }
+
+    #toggle-button {
+        left: 30px; /* 右端に追従するように変更 */
+    }
+
+    #right-pane {
+        flex-basis: 100%;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+}
+
+.progBar{
+    height:24px;
+    width: 100%;
+    margin-bottom: 1em;
+    background-color:#ececec;
+    position:relative;
+    border-radius:10px;
+    overflow: hidden;
+}
+.progBar .bar{
+    position:absolute;
+    height:100%;
+    background-color:#FFD700;
+}
+.completed{
+    background-color: #CCC;
+    color: #666;
+}
+.bar-label{
+    color: black;
+    position:relative;
+    padding-left: 1em;
+}
+.icon{
+    background-color: #ccc;
+    color: #fff;
+    border-radius: 20px;
+    width: 20px;
+    height: 20px;
+    padding: 10px;
+    margin-right: 10px;
+}
+.iconlink{
+    width: 200px;
+    flex-basis: 80px;
+    color:#fff;
+    margin:10px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
