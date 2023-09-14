@@ -1,0 +1,90 @@
+{% extends "float-card.html" %}
+{% load static %}
+{% block title %}ダッシュボード{% endblock title %}
+
+{% block contents %}
+{% if goal %}
+{% for todo in object_list %}
+<div class="card">
+{% if todo.type == 'reading' %}
+    <div class="card-title">
+        <img src="{% static "assets/icon/book.png" %}" alt="読書" class="icon">
+        <h2>{{ todo.title }}</h2>
+    </div>
+
+    {% if todo.is_completed %}
+    {% comment %} 完了済みのタスク {% endcomment %}
+    <div class="progBar">
+        <div class="bar" style="width:100%; background-color: #33FF33;">
+            <div class="bar-label">完了済み</div>
+        </div>
+    </div>
+    {% elif todo.percent is not None %}
+    <div class="progBar">
+        <div class="bar" style="width:{{todo.percent}}%">
+            <div class="bar-label">{{ todo.percent|floatformat:1 }}%</div>
+        </div>
+    </div>
+    {% endif %}
+{% elif todo.type == 'exam' %}
+    <div class="card-title">
+        <img src="{% static "assets/icon/measure.png" %}" alt="指標" class="icon">
+        <h2>{{ todo.title }}</h2>
+    </div>
+
+    {% if todo.is_completed %}
+    {% comment %} 完了済みのタスク {% endcomment %}
+    <div class="progBar">
+        <div class="bar" style="width:100%; background-color: #33FF33;">
+            <div class="bar-label">完了済み</div>
+        </div>
+    </div>
+    {% elif todo.percent is not None %}
+    <div class="progBar">
+        <div class="bar" style="width:{{todo.percent}}%">
+            <div class="bar-label">{{ todo.percent|floatformat:1 }}%</div>
+        </div>
+    </div>
+    {% endif %}
+{% elif todo.type == 'training' %}
+    <div class="card-title">
+        <img src="{% static "assets/icon/muscle.png" %}" alt="トレーニング" class="icon">
+        <h2>{{ todo.title }}</h2>
+    </div>
+
+    {% if todo.is_completed %}
+    {% comment %} 完了済みのタスク {% endcomment %}
+    <div class="progBar">
+        <div class="bar" style="width:100%; background-color: #33FF33;">
+            <div class="bar-label">完了済み</div>
+        </div>
+    </div>
+    {% elif todo.percent is not None %}
+    <div class="progBar">
+        <div class="bar" style="width:{{todo.percent}}%">
+            <div class="bar-label">{{ todo.percent|floatformat:1 }}%</div>
+        </div>
+    </div>
+    {% endif %}
+{% elif todo.type == 'memo' %}
+    <div class="card-title">
+        <img src="{% static "assets/icon/memo.png" %}" alt="メモ" class="icon">
+        <h2>{{ todo.title }}</h2>
+    </div>
+
+{% endif %}
+    <div class="d-flex card-footer justify-content-between">
+        <a class="btn btn-primary btn-sm" href="{% url 'todo:todo_detail' pk=todo.pk %}">詳細</a>
+        {% if todo.is_pinned and not todo.is_completed %}
+        <a href="{% url 'todo:pin' pk=todo.pk %}" alt="ピン留め" class="heart" style="color: red;">&#9829;</a>
+        {% elif not todo.is_completed %}
+        <a href="{% url 'todo:pin' pk=todo.pk %}" alt="ピン留め" class="heart" style="color: black;">&#9825;</a>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+{% else %}
+{% comment %} 目標未設定の場合 {% endcomment %}
+
+{% endif %}
+{% endblock  %}

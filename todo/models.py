@@ -29,6 +29,19 @@ class Goals(models.Model):
     def is_remind(self) -> bool:
         '''リマインド時刻が設定されているかどうか'''
         return bool(self.remind_at)
+    
+    @property
+    def total_days(self) -> int:
+        '''期間を返す'''
+        if self.until_date is None:
+            return 0
+        else:
+            return (self.until_date - self.from_date).days
+        
+    @property
+    def percent(self) -> float:
+        '''期間に対して過ぎた日数の割合を返す'''
+        return (1.0 - self.days_left / self.total_days) * 100
 
 class TypeChoices(models.TextChoices):
     TASK = 'task', 'なし（タスク）'

@@ -29,7 +29,7 @@ class IndexView(TemplateView):
 @method_decorator(login_required, name='dispatch')
 class MainView(ListView):
     '''メインページの表示'''
-    template_name = 'main.html'
+    template_name = 'dashboard.html'
     model = Todos
     
     def get_queryset(self):
