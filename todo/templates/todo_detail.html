@@ -58,17 +58,6 @@
             </div>
         </div>
         {% endif %}
-        {% comment %} グラフの表示 {% endcomment %}
-        {% if not chart_no_data %}
-        <div class="col-md-4">
-            <div class="card h-100 my-4">
-                <div class="card-body">
-                    <h3 class="card-title">グラフ</h3>
-                    <img style="max-width: 100%;" src="data:image/png;base64,{{ chart | safe }}">
-                </div>
-            </div>
-        </div>
-        {% endif %}
     </div><br>
     {% if not todo.is_completed %}
     <form action="{% url 'todo:timer' %}" method="get" class="my-4">

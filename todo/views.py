@@ -233,7 +233,7 @@ class TodoDeleteView(GetGoal, TemplateView):
 @method_decorator(login_required, name='dispatch')
 class TodoDetailView(GetGoal, DetailView):
     '''Todoの詳細表示'''
-    template_name = 'todo_detail.html'
+    template_name = 'card.html'
     model = Todos
     context_object_name = 'todo'
 
@@ -242,7 +242,8 @@ class TodoDetailView(GetGoal, DetailView):
         # グラフの取得
         # 今日から数えて七日前までのデータを一日ごとに集計する。
         # 累計データの場合、累計グラフにする。
-        qs = Records.objects.filter(todo=self.kwargs['pk'], done_at__gte=datetime.now() - timedelta(days=7))
+        records = Records.objects.filter(todo=self.kwargs['pk'])
+        qs = records.filter(done_at__gte=datetime.now() - timedelta(days=7))
         # 一週間のデータがない場合、chart_no_dataをcontextに追加して戻す
         if not qs:
             context = super().get_context_data(**kwargs)
@@ -271,8 +272,10 @@ class TodoDetailView(GetGoal, DetailView):
                 y.append(dx)
         x_tick = [day.strftime('%m/%d') for day in x]
         chart = graph.Plot_Graph(x_tick,y, self.object.amount)
+
         context = super().get_context_data(**kwargs)
         context['chart'] = chart
+        context['records'] = records.order_by('-done_at')
         return context
 
 @method_decorator(login_required, name='dispatch')
@@ -293,6 +296,7 @@ class RecordAddView(GetGoal, TemplateView):
         todo = Todos.objects.get(pk=todo_id)
         # numの値を取得
         num = int(request.GET.get('num'))
+        memo = request.GET.get('memo')
         # タスクの種類によって処理を変える
         if todo.type == 'training':
             # trainingの場合は加算 
@@ -301,7 +305,7 @@ class RecordAddView(GetGoal, TemplateView):
             # examとreadingの場合は値を上書き
             todo.current = num
 
-        record = Records(todo=todo, num=num)
+        record = Records(todo=todo, num=num, memo=memo)
         record.save()
         todo.save()
 
@@ -346,7 +350,7 @@ def record_delete(request, pk):
         todo.current = latest_record.num
         todo.save()
     record.delete()
-    return redirect('todo:record_list', pk=record.todo.pk)
+    return redirect('todo:todo_detail', pk=record.todo.pk)
 
 @login_required
 def pin_todo(request, pk):

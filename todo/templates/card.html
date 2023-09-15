@@ -1,0 +1,185 @@
+{% extends "float-card.html" %}
+{% load static %}
+{% block title %}{{ todo.title }}{% endblock title %}
+{% block contents %}
+<div class="card">
+    <div class="card-title">
+        {% if todo.type == 'reading' %}
+        <img src="{% static "assets/icon/book.png" %}" alt="読書" class="icon">
+        {% elif todo.type == 'exam' %}
+        <img src="{% static "assets/icon/measure.png" %}" alt="指標" class="icon">
+        {% elif todo.type == 'training' %}
+        <img src="{% static "assets/icon/muscle.png" %}" alt="トレーニング" class="icon">
+        {% elif todo.type == 'task' %}
+        <img src="{% static "assets/icon/check.png" %}" alt="タスク" class="icon">
+        {% elif todo.type == 'memo' %}
+        <img src="{% static "assets/icon/memo.png" %}" alt="メモ" class="icon">
+        {% endif %}
+        <h1>{{ todo.title }}</h1><br>
+    </div>
+    <div class="card-body">
+        {% if todo.amount is not None %}
+        <small>{{ todo.current }} / {{ todo.amount }}{{ todo.unit }}</small>
+        {% endif %}
+        {% if todo.is_completed %}
+        <div class="progBar">
+            <div class="bar-completed">
+                <div class="bar-label">完了済み</div>
+            </div>
+        </div>
+        {% elif todo.percent is not None %}
+        <div class="progBar">
+            <div class="bar" style="width:{{todo.percent}}%">
+                <div class="bar-label">{{ todo.percent|floatformat:1 }}%</div>
+            </div>
+        </div>
+        {% endif %}
+        
+        {% comment %} グラフの表示 {% endcomment %}
+        {% if not chart_no_data %}
+        <div>
+            <img style="max-width: 100%;" src="data:image/png;base64,{{ chart | safe }}">
+        </div>
+        {% endif %}
+        
+        {% comment %} 予定日 {% endcomment %}
+        {% if todo.until_date and todo.every_ndays %}
+        {% comment %} 繰り返しの場合 {% endcomment %}
+        {% if todo.until_date == today %}
+        <h3>本日予定日</h3>
+        {% else %}
+        <h3>次回予定：{{ todo.until_date| date:"m月d日" }}</h3>
+        {% endif %}
+        {% elif todo.until_date %}
+        <h3>終了予定：{{ todo.until_date| date:"m月d日" }}</h3>
+        {% endif %}
+
+        {% comment %} メモ {% endcomment %}
+        {% if todo.memo %}
+        {{ todo.memo }} <br><br>
+        {% endif %}
+
+        {% comment %} ボタン類 {% endcomment %}
+        <div class="icon_container">
+            <div id="addRecord">
+                <img src="{% static "assets/icon/pencil.png" %}" alt="記録追加" class="icon">
+            </div>
+            <div id="timer">
+                <img src="{% static "assets/icon/timer.png" %}" alt="タイマー" class="icon">
+            </div>
+            <a href="{% url "todo:todo_delete" pk=todo.pk %}">
+                <img src="{% static "assets/icon/delete.png" %}" alt="削除" class="icon">
+            </a>
+            <a href="{% url "todo:todo_config" pk=todo.pk %}">
+                <img src="{% static "assets/icon/config.png" %}" alt="設定" class="icon">
+            </a>
+            <a href="{% url "todo:todo_complete" pk=todo.pk %}">
+                <img src="{% static "assets/icon/check.png" %}" alt="完了" class="icon">
+            </a>
+            <a href="{% url "todo:main" %}">
+                <img src="{% static "assets/icon/back.png" %}" alt="戻る" class="icon">
+            </a>
+        </div>
+    </div>
+</div>
+<div class="card">
+    {% if records %}
+    <div class="card-title">
+        <h2>記録一覧</h2>
+    </div>
+    <div class="card-body">
+        <table class="records">
+            <tr>
+                <th></th>
+                <th>日時</th>
+                <th>記録</th>
+            </tr>
+            {% for record in records %}
+            <tr>
+                <td>
+                    <a href="{% url "todo:record_delete" pk=record.pk %}">
+                        <img src="{% static "assets/icon/delete.png" %}" alt="" class="icon icon-small">
+                    </a>
+                </td>
+                <td>{{ record.done_at|date:"m月d日 h:m" }}</td>
+                <td>{{ record.num }} {{ todo.unit }}</td>
+            </tr>
+            {% if record.memo %}
+            <tr>
+                <td colspan=3 class="memo">{{ record.memo }}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+    {% else %}
+    <div class="card-title">
+        <h2>まだ記録がありません。</h2>
+    </div>
+    {% endif %}
+</div>
+
+
+<div class="overlay" id="addRecordField">
+    <div class="overlay-content" style="width:300px;">
+        <h3>{{todo.title}} : 記録の追加</h3>
+        <form action="{% url "todo:record_add" %}" method="get">
+            {% csrf_token %}
+            <input type="hidden" name="todo" id="id_todo" value="{{todo.pk}}">
+            <input type="number" name="num" id="id_num" placeholder="数を入力（必須）"> : {{ todo.unit }} <br>
+            <textarea name="memo" id="id_memo" placeholder="コメントを入力（任意）" 
+                style="width:200px; height:100px;"></textarea><br>
+            <button type="submit" class="btn">保存</button>
+            <a href="#" class="btn" id="hideAddRecord">閉じる</a>
+        </form>
+    </div>
+</div>
+
+<div class="overlay" id="timerField">
+    <div class="overlay-content">
+        <h3>タイマー</h3>
+        <div class="btn" id="hideTimerButton"></div>
+    </div>
+</div>
+
+<script>
+    ////////////記録追加ボタン//////////////
+    // オーバーレイを表示するボタン
+    const addRecordButton = document.getElementById('addRecord');
+    // オーバーレイを非表示にするボタン
+    const hideAddRecordButton = document.getElementById('hideAddRecord');
+    // オーバーレイ要素
+    const addRecordField = document.getElementById('addRecordField');
+    // オーバーレイを表示する関数
+    function showAddRecordField() {
+        addRecordField.style.display = 'flex';
+    }
+    // オーバーレイを非表示にする関数
+    function hideAddRecordField() {
+        addRecordField.style.display = 'none';
+    }
+    // ボタンのクリックイベントを設定
+    addRecordButton.addEventListener('click', showAddRecordField);
+    hideAddRecordButton.addEventListener('click', hideAddRecordField);
+
+    ////////////タイマーボタン//////////////
+    // オーバーレイを表示するボタン
+    const showTimerButton = document.getElementById('showTimer');
+    // オーバーレイを非表示にするボタン
+    const hideTimerButton = document.getElementById('hideTimer');
+    // オーバーレイ要素
+    const timerField = document.getElementById('timerField');
+    // オーバーレイを表示する関数
+    function showTimerField() {
+        timerField.style.display = 'flex';
+        document.getElementById('id_num').focus()
+    }
+    // オーバーレイを非表示にする関数
+    function hideTimerField() {
+        timerField.style.display = 'none';
+    }
+    // ボタンのクリックイベントを設定
+    showTimerButton.addEventListener('click', showTimerField);
+    hideTimerButton.addEventListener('click', hideTimerField);
+</script>
+{% endblock contents %}

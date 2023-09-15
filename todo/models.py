@@ -73,7 +73,7 @@ class Todos(models.Model):
     memo = models.TextField(verbose_name='メモ', null=True, blank=True)
     # 状態：ピン留めなら０、通常は１、完了済みは２
     state = models.IntegerField(verbose_name='状態', default=State.NORMAL.value)
-    every_ndays = models.IntegerField(verbose_name='繰り返し期間', null=True, blank=True)
+    # every_ndays = models.IntegerField(verbose_name='繰り返し期間', null=True, blank=True)
 
     def __str__(self) -> str:
         return self.title
