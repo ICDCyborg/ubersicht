@@ -93,7 +93,6 @@ class MailScheduler:
             job_id = self.scheduler.add_job(self.send_email, 'cron', hour=hour, minute=minute, args=[self, goal]).id
             self.job_dict[goal.user.pk] = job_id
             print('registered job for '+goal.user.username)
-        print(self.job_dict)
 
     @classmethod
     def schedule_email_stop(self, user_id: int):

@@ -3,7 +3,26 @@
 {% block title %}ダッシュボード{% endblock title %}
 
 {% block contents %}
-{% if goal %}
+{% if note %}
+{% comment %} アプリからの通知がある場合 {% endcomment %}
+<div class="card">
+    <div class="card-title">
+        <img src="{% static "assets/icon/warning.png" %}" alt="警告" class="icon" style="background: #FD0;">
+        <h2>{{ note.title }}</h2>
+    </div>
+    <div class="card-body">
+        {{ note.content }}
+    </div>
+    {% if note.button %}
+    <div class="card-footer">
+        <div class="d-flex card-footer justify-content-between">
+            <a class="btn" href="{{ note.link }}">{{ note.button }}</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
 {% for todo in object_list %}
 <div class="card">
 {% if todo.type == 'reading' %}
@@ -15,7 +34,7 @@
     {% if todo.is_completed %}
     {% comment %} 完了済みのタスク {% endcomment %}
     <div class="progBar">
-        <div class="bar" style="width:100%; background-color: #33FF33;">
+        <div class="bar-completed">
             <div class="bar-label">完了済み</div>
         </div>
     </div>
@@ -35,7 +54,7 @@
     {% if todo.is_completed %}
     {% comment %} 完了済みのタスク {% endcomment %}
     <div class="progBar">
-        <div class="bar" style="width:100%; background-color: #33FF33;">
+        <div class="bar-completed">
             <div class="bar-label">完了済み</div>
         </div>
     </div>
@@ -55,7 +74,7 @@
     {% if todo.is_completed %}
     {% comment %} 完了済みのタスク {% endcomment %}
     <div class="progBar">
-        <div class="bar" style="width:100%; background-color: #33FF33;">
+        <div class="bar-completed">
             <div class="bar-label">完了済み</div>
         </div>
     </div>
@@ -73,8 +92,12 @@
     </div>
 
 {% endif %}
+    <div class="card-body">
+        {{ todo.memo | truncatechars:25 }} <br>
+        {{ todo.record_memo | truncatechars:25 }}
+    </div>
     <div class="d-flex card-footer justify-content-between">
-        <a class="btn btn-primary btn-sm" href="{% url 'todo:todo_detail' pk=todo.pk %}">詳細</a>
+        <a class="btn" href="{% url 'todo:todo_detail' pk=todo.pk %}">詳細</a>
         {% if todo.is_pinned and not todo.is_completed %}
         <a href="{% url 'todo:pin' pk=todo.pk %}" alt="ピン留め" class="heart" style="color: red;">&#9829;</a>
         {% elif not todo.is_completed %}
@@ -83,8 +106,6 @@
     </div>
 </div>
 {% endfor %}
-{% else %}
-{% comment %} 目標未設定の場合 {% endcomment %}
 
-{% endif %}
+<a href="{% url "todo:todo_create" %}" id="add-card-button"><img src="{% static "assets/icon/plus.png" %}" alt="カード追加"></a>
 {% endblock  %}

@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView, ListView, UpdateView, \
     CreateView, DeleteView, DetailView
+from django.views.generic.base import ContextMixin
 # import methoddecorator
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -21,33 +22,66 @@ from . import forms
 from .models import Goals, Todos, Records, State, JournalLine
 
 # Create your views here.
+def get_goal(user) -> Optional[Goals]:
+    '''目標を取得する'''
+    if user.is_anonymous:
+        return None
+    goal = Goals.objects.filter(user=user, is_completed=False)
+    if goal.exists():
+        return goal[0]
+    else:
+        return None
+    
+class Note:
+    '''
+    アプリからの通知を表示するカード
+
+    Attributes:
+        title: タイトル
+        content: 本文
+        type: 通知の種類
+        button: ボタンに表示する文字列
+        link: ボタンを押した際のリンク先
+    '''
+    def __init__(self, title: str, content: str, type: str='notification',
+                button: str='', link:str=''):
+        self.title = title
+        self.content = content
+        self.type = type
+        self.button = button
+        self.link = link
+        return
+class GetGoal(ContextMixin):
+    '''contextにgoalをセットする基底クラス'''
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['goal'] = get_goal(self.request.user)
+        return context
 
 class IndexView(TemplateView):
     '''ウェルカムページを表示'''
     template_name = 'index.html'
 
 @method_decorator(login_required, name='dispatch')
-class MainView(ListView):
+class MainView(GetGoal, ListView):
     '''メインページの表示'''
     template_name = 'dashboard.html'
     model = Todos
     
     def get_queryset(self):
-        goal = Goals.objects.filter(user=self.request.user, is_completed=False)
-        if goal.exists():
-            return Todos.objects.filter(goal_id=goal[0].pk).order_by('state')
-        else:
-            return Todos.objects.none()
+        goal = get_goal(self.request.user)
+        queryset = Todos.objects.filter(goal=goal).order_by('state')
+        return queryset
     
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        goal = Goals.objects.filter(user=self.request.user, is_completed=False)
-        if goal.exists():
-            context['goal'] = goal[0]
+        if 'goal' not in context:
+            context['note'] = Note('目標未設定', '目標が設定されていません。', 
+                            button='目標を設定', link=reverse_lazy('todo:goal_config'))
         return context
 
 @method_decorator(login_required, name='dispatch')
-class GoalConfigView(UpdateView):
+class GoalConfigView(GetGoal, UpdateView):
     '''目標設定と更新を行う'''
     template_name = 'goal_config.html'
     form_class = forms.GoalForm
@@ -66,20 +100,15 @@ class GoalConfigView(UpdateView):
         return super().form_valid(form)
     
     def get_object(self, queryset=None):
-        active_goal = Goals.objects.filter(user=self.request.user, is_completed=False)
-        if active_goal.exists():
-            return active_goal[0]
-        else:
-            return Goals()
+        return get_goal(self.request.user)
     
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        active_goal = Goals.objects.filter(user=self.request.user, is_completed=False)
-        context['update'] = active_goal.exists()
+        context['update'] = bool(get_goal(self.request.user))
         return context
     
 @method_decorator(login_required, name='dispatch')
-class GoalAchievedView(TemplateView):
+class GoalAchievedView(GetGoal, TemplateView):
     '''目標達成ページ'''
     template_name = 'accomplishment.html'
 
@@ -107,11 +136,9 @@ class GoalDeleteView(TemplateView):
     template_name = 'done.html'
 
     def get(self, request, *args, **kwargs):
-        try:
-            goal = Goals.objects.get(user=request.user, is_completed=False)
+        goal = get_goal(request.user)
+        if goal:
             goal.delete()
-        except Goals.DoesNotExist:
-            pass
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
@@ -121,7 +148,7 @@ class GoalDeleteView(TemplateView):
         return context
 
 @method_decorator(login_required, name='dispatch')
-class AchievementView(ListView):
+class AchievementView(GetGoal, ListView):
     '''目標達成実績ページのビュー'''
     template_name = 'achievement.html'
     model = Goals
@@ -133,18 +160,11 @@ class AchievementView(ListView):
             goal.todos = todos
         return queryset
 
-class TodoFormBaseView:
+class TodoFormBaseView(GetGoal):
     '''TodoFormを使うベースクラス'''
     template_name = 'todo_config.html'
     form_class = forms.TodoForm
     success_url = reverse_lazy('todo:main')
-
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
-        # 現在のgoalの情報をcontextに埋め込む
-        context = super().get_context_data(**kwargs)
-        goal = Goals.objects.get(user=self.request.user, is_completed=False)
-        context['goal'] = goal
-        return context
 
     def form_valid(self, form):
         postdata = form.save(commit=False)
@@ -176,7 +196,7 @@ class TodoCreateView(TodoFormBaseView, CreateView):
     ...
 
 @method_decorator(login_required, name='dispatch')
-class TodoCompleteView(TemplateView):
+class TodoCompleteView(GetGoal, TemplateView):
     '''Todoを完了済みにする'''
     template_name = 'accomplishment.html'
 
@@ -193,15 +213,9 @@ class TodoCompleteView(TemplateView):
         context['congrats'] = 'タスクを完了し、目標に近づきました！'
         return context
 
-class TodoDetailView(DetailView):
-    def get(self, request, *args, **kwargs):
-        todo = Todos.objects.get(pk=self.kwargs['pk'])
-        if todo.state == State.COMPLETED.value:
-            return redirect('todo:done', pk=self.kwargs['pk'])
-        return super().get(request, *args, **kwargs)
 
 @method_decorator(login_required, name='dispatch')
-class TodoDeleteView(TemplateView):
+class TodoDeleteView(GetGoal, TemplateView):
     '''Todoを削除する'''
     template_name = 'done.html'
 
@@ -217,7 +231,7 @@ class TodoDeleteView(TemplateView):
         return context
 
 @method_decorator(login_required, name='dispatch')
-class TodoDetailView(DetailView):
+class TodoDetailView(GetGoal, DetailView):
     '''Todoの詳細表示'''
     template_name = 'todo_detail.html'
     model = Todos
@@ -262,14 +276,14 @@ class TodoDetailView(DetailView):
         return context
 
 @method_decorator(login_required, name='dispatch')
-class RecordView(DetailView):
+class RecordView(GetGoal, DetailView):
     '''実施記録の作成'''
     template_name = 'record.html'
     model = Todos
     context_object_name = 'todo'
 
 @method_decorator(login_required, name='dispatch')
-class RecordAddView(TemplateView):
+class RecordAddView(GetGoal, TemplateView):
     '''記録追加完了'''
     template_name = 'accomplishment.html'
 
@@ -303,7 +317,7 @@ class RecordAddView(TemplateView):
         return context
 
 @method_decorator(login_required, name='dispatch')
-class RecordListView(ListView):
+class RecordListView(GetGoal, ListView):
     '''記録の一覧ページ'''
     template_name = 'record_list.html'
     model = Records
@@ -350,7 +364,7 @@ def pin_todo(request, pk):
 class TimerView(TemplateView):
     template_name = 'timer.html'
 
-class JournalView(TemplateView):
+class JournalView(GetGoal, TemplateView):
     template_name = 'journal.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:

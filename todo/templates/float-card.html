@@ -25,22 +25,23 @@
             </div>
             {% else %}
             <div>目標が設定されていません。</div>
-            <a href="#">こんにちは</a>
-            <a href="#">目標を設定</a>
+            <a href="{% url "todo:goal_config" %}" class="btn">目標を設定</a>
             {% endif %}
 
-            <a href="#" class="iconlink"><img src="{% static "assets/icon/user.png" %}" alt="ユーザ設定" class="icon">ユーザ設定</a>
-            <a href="#" class="iconlink"><img src="{% static "assets/icon/flag.png" %}" alt="目標設定" class="icon">目標設定</a>
-            <a href="#" class="iconlink"><img src="{% static "assets/icon/journal.png" %}" alt="ジャーナル" class="icon">ジャーナル</a>
-            <a href="#" class="iconlink"><img src="{% static "assets/icon/exit.png" %}" alt="ログアウト" class="icon">ログアウト</a>
+            <a href="{% url "accounts:user_change" pk=user.pk %}" class="iconlink"><img src="{% static "assets/icon/user.png" %}" alt="ユーザ設定" class="icon">ユーザ設定</a>
+            <a href="{% url "todo:goal_config" %}" class="iconlink"><img src="{% static "assets/icon/flag.png" %}" alt="目標設定" class="icon">目標設定</a>
+            <a href="{% url "todo:journal" %}" class="iconlink"><img src="{% static "assets/icon/journal.png" %}" alt="ジャーナル" class="icon">ジャーナル</a>
+            <a href="{% url "accounts:logout" %}" class="iconlink"><img src="{% static "assets/icon/exit.png" %}" alt="ログアウト" class="icon">ログアウト</a>
         </div>
         <div id="right-pane">
             <div id="toggle-button">&raquo;</div>
             {% block contents %}
             {% endblock contents %}
+            <div id="content-footer">
+                Ubersicht 2023 all rights reserved.
+            </div>
         </div>
     </div>
-    <a href="#" id="add-card-button"><img src="{% static "assets/icon/plus.png" %}" alt="カード追加"></a>
 
     <script src="{% static "js/float-card.js" %}"></script>
 </body>

@@ -27,5 +27,5 @@ urlpatterns = [
     path('record/<int:pk>', RecordListView.as_view(), name='record_list'),
     path('record/delete/<int:pk>', record_delete, name='record_delete'),
     path('timer/', TimerView.as_view(), name='timer'),
-    path('journal', JournalView.as_view(), name='journal'),
+    path('journal/', JournalView.as_view(), name='journal'),
 ]

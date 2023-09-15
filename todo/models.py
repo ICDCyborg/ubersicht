@@ -73,7 +73,7 @@ class Todos(models.Model):
     memo = models.TextField(verbose_name='メモ', null=True, blank=True)
     # 状態：ピン留めなら０、通常は１、完了済みは２
     state = models.IntegerField(verbose_name='状態', default=State.NORMAL.value)
-    # every_ndays = models.IntegerField(verbose_name='繰り返し期間', null=True, blank=True)
+    every_ndays = models.IntegerField(verbose_name='繰り返し期間', null=True, blank=True)
 
     def __str__(self) -> str:
         return self.title
@@ -131,6 +131,31 @@ class Todos(models.Model):
             return None
         else:
             return self.current / self.amount * 100
+    
+    @property
+    def is_expired(self) -> bool:
+        '''期日が過ぎているかどうか'''
+        if self.until_date is None:
+            return False
+        else:
+            return self.until_date < date.today()
+
+    @property
+    def total_days(self) -> int:
+        '''総日数を返す'''
+        if self.until_date is None:
+            return 0
+        else:
+            return (self.until_date - self.from_date).days
+    
+    @property
+    def record_memo(self) -> str:
+        '''最新のレコードメモを日付つきで返す'''
+        try:
+            r = Records.objects.filter(todo=self, memo__isnull=False).latest('done_at')
+            return r.done_at.strftime('(%m/%d)') + ' ' + r.memo
+        except Records.DoesNotExist:
+            return ''
 
 class Records(models.Model):
     '''実施記録テーブル'''
