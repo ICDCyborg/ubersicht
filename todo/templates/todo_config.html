@@ -37,8 +37,8 @@
                 <button type="submit" class="btn">保存</button>
                 <a href="{% url 'todo:main' %}" class="btn btn-secondary">戻る</a>
                 {% if update %}
-                <a href="{% url 'todo:todo_complete' pk=form.instance.pk %}" class="btn btn-secondary">タスク完了</a>
-                <a href="{% url 'todo:todo_delete' pk=form.instance.pk %}" class="btn btn-secondary">タスクの削除</a>
+                <a href="{% url 'todo:todo_complete' pk=form.instance.pk %}" class="btn" id="completeButton">タスク完了</a>
+                <a href="{% url 'todo:todo_delete' pk=form.instance.pk %}" class="btn" id="deleteButton">タスクの削除</a>
                 {% endif %}
             </form>
         </div>

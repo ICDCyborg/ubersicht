@@ -1,12 +1,41 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Ubersicht - 目標達成をサポートするToDoアプリ{% endblock title %}
+{% block style %}
+
+<style>
+    .dictionary-entry {
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin: 20px;
+    }
+
+    .word {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .definition {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+    .source {
+        font-size: 0.6em;
+        color: #666;
+    }
+</style>
+{% endblock style %}
 {% block contents %}
 <!-- Masthead-->
+
 <header class="masthead">
     <div class="container">
         <div class="masthead-subheading ">目標達成をサポートするToDoアプリ</div>
         <div class="masthead-heading text-uppercase">Ubersicht</div>
+        
         {% if user.is_authenticated %}
         <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'todo:main' %}">メインページへ</a>
         {% else %}
@@ -14,44 +43,45 @@
         {% endif %}
     </div>
 </header>
-{% endblock contents %}
 
-{% comment %} <!-- Services-->
-        <section class="page-section" id="services">
-            <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Services</h2>
-                    <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
-                </div>
-                <div class="row text-center">
-                    <div class="col-md-4">
-                        <span class="fa-stack fa-4x">
-                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fas fa-shopping-cart fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <h4 class="my-3">E-Commerce</h4>
-                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                    </div>
-                    <div class="col-md-4">
-                        <span class="fa-stack fa-4x">
-                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fas fa-laptop fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <h4 class="my-3">Responsive Design</h4>
-                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                    </div>
-                    <div class="col-md-4">
-                        <span class="fa-stack fa-4x">
-                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fas fa-lock fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <h4 class="my-3">Web Security</h4>
-                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                    </div>
-                </div>
+<!-- Services-->
+<section class="page-section" id="services">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">特徴</h2>
+            <p>Ubersicht （ユーバージヒト）は「上からの視点」という意味を持ち、「展望、見通し」を表すドイツ語です。<br>
+上空から見下ろすように、現在位置を明確にし、目的地までの道程を見通すあなた専用のナビゲーターに。<br><br>
+
+Ubersichtはコーチングの手法を取り入れた、全く新しいTodoアプリです。</p><br>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <span class="fa-stack fa-4x">
+                    <img src="{% static "assets/icon/check.png" %}" alt="タスク" width=100>
+                </span>
+                <h4 class="my-3">タスク管理</h4>
+                <p class="text-muted">今やるべきことと進捗が一目で分かる</p>
             </div>
-        </section>
-        <!-- Portfolio Grid-->
+            <div class="col-md-4">
+                <span class="fa-stack fa-4x">
+                    <img src="{% static "assets/icon/timer.png" %}" alt="タイマー" width=100>
+                </span>
+                <h4 class="my-3">集中タイマー</h4>
+                <p class="text-muted">ポモドーロテクニックで集中できる時間を確保</p>
+            </div>
+            <div class="col-md-4">
+                <span class="fa-stack fa-4x">
+                    <img src="{% static "assets/icon/mail.png" %}" alt="メール" width=100>
+                </span>
+                <h4 class="my-3">リマインダー</h4>
+                <p class="text-muted">一日一回の進捗確認でモチベーションを維持</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock contents %}
+{% comment %}
+<!-- Portfolio Grid-->
         <section class="page-section bg-light" id="portfolio">
             <div class="container">
                 <div class="text-center">

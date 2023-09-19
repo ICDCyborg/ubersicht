@@ -221,10 +221,10 @@ body {
     margin:0;
 }
 .iconlink{
-    width: 150px;
+    /* width: 150px; */
     /* flex-basis: 80px; */
     color:#fff;
-    margin:10px;
+    /* margin:10px; */
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -236,6 +236,7 @@ body {
     }
 }
 .icon_container{
+    max-width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
@@ -247,6 +248,7 @@ body {
     display:flex;
     flex-direction:row;
     flex-wrap: wrap;
+    gap: 15px 50px;
 }
 
 .heart{
@@ -315,5 +317,10 @@ th{
     width: 80%; /* オーバーレイの幅を設定します */
     max-width: 600px; /* 最大幅を設定します */
     display: flex;
+    flex-direction: column;
     align-content: center;
+}
+
+.overlay-content h3{
+    width:100%;
 }

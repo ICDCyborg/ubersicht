@@ -65,22 +65,22 @@
 
         {% comment %} ボタン類 {% endcomment %}
         <div class="icon_container">
-            <div id="addRecord">
+            <div id="addRecord" class="iconlink">
                 <img src="{% static "assets/icon/pencil.png" %}" title="記録追加" alt="記録追加" class="icon">
             </div>
-            <div id="showTimer">
+            <div id="showTimer" class="iconlink">
                 <img src="{% static "assets/icon/timer.png" %}" title="タイマー" alt="タイマー" class="icon">
             </div>
-            <a href="{% url "todo:todo_delete" pk=todo.pk %}">
+            <a href="{% url "todo:todo_delete" pk=todo.pk %}" class="iconlink" id="deleteButton">
                 <img src="{% static "assets/icon/delete.png" %}" title="削除" alt="削除" class="icon">
             </a>
-            <a href="{% url "todo:todo_config" pk=todo.pk %}">
+            <a href="{% url "todo:todo_config" pk=todo.pk %}" class="iconlink">
                 <img src="{% static "assets/icon/config.png" %}" title="設定" alt="設定" class="icon">
             </a>
-            <a href="{% url "todo:todo_complete" pk=todo.pk %}">
+            <a href="{% url "todo:todo_complete" pk=todo.pk %}" class="iconlink" id="completeButton">
                 <img src="{% static "assets/icon/check.png" %}" title="完了" alt="完了" class="icon">
             </a>
-            <a href="{% url "todo:main" %}">
+            <a href="{% url "todo:main" %}" class="iconlink">
                 <img src="{% static "assets/icon/back.png" %}" title="戻る" alt="戻る" class="icon">
             </a>
         </div>

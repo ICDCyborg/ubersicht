@@ -20,3 +20,25 @@ function updateClock() {
 // 初回表示と1秒ごとに時計を更新
 updateClock();
 setInterval(updateClock, 1000);
+
+//確認ダイアログ
+function confirmDeletion() {
+    // ダイアログボックスを表示し、ユーザーが「OK」をクリックしたらtrueを返す
+    return confirm("削除してよろしいですか？この操作は取り消せません。");
+}
+function confirmCompletion() {
+    // ダイアログボックスを表示し、ユーザーが「OK」をクリックしたらtrueを返す
+    return confirm("完了済みにしてよろしいですか？この操作は取り消せません。");
+}
+
+// ページ内の全てのリンクに確認ダイアログを適用する
+const completeButton = document.getElementById("completeButton");
+const deleteButton = document.getElementById("deleteButton");
+completeButton.addEventListener("click", function(event) {
+    if (!confirmCompletion()){
+        event.preventDefault();
+    }});
+deleteButton.addEventListener("click", function(event) {
+    if (!confirmDeletion()){
+        event.preventDefault();
+    }});
