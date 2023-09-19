@@ -9,32 +9,32 @@
                 {% csrf_token %}
                 <table border=0>
                     <tr>
-                        <th class="h3">期日：</th>
+                        <th>期日：</th>
                         <td><input type="date" name="until_date" value="{{ form.until_date.value|date:'Y-m-d' }}" id="id_until_date" autofocus> までに、</td>
                     </tr>
                     <tr>
-                        <th class="h3">目標値：</th>
+                        <th>目標値：</th>
                         <td>{{ form.amount }} {{ form.type }}</td>
                     </tr>
                     <tr>
-                        <th class="h3">やる事：</th>
+                        <th>やる事：</th>
                         <td>{{ form.title }}</td>
                     </tr>
                     <tr>
-                        <th class="h3">画像：</th>
+                        <th>画像：</th>
                         <td>{{ form.image }}</td>
                     </tr>
                     <tr>
-                        <th class="h3">タイマー：</th>
+                        <th>タイマー：</th>
                         <td>{{ form.timer }}　分</td>
                     </tr>
                     <tr>
-                        <th class="h3" style="vertical-align: top;">コメント：</th>
+                        <th style="vertical-align: top;">コメント：</th>
                         <td>{{ form.memo }}</td>
                         {% comment %} <td><input type="text" name="memo" value="{{ form.memo.value }}" id="id_memo" height=200></td> {% endcomment %}
                     </tr>
                 </table>
-                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="submit" class="btn">保存</button>
                 <a href="{% url 'todo:main' %}" class="btn btn-secondary">戻る</a>
                 {% if update %}
                 <a href="{% url 'todo:todo_complete' pk=form.instance.pk %}" class="btn btn-secondary">タスク完了</a>

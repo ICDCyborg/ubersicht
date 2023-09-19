@@ -282,7 +282,7 @@ button.btn{
 .records{
     border: 1px solid black;
 }
-.records td, th{
+.records td, .records th{
     border: 1px solid black;
     padding:4px 8px;
 }
@@ -291,6 +291,7 @@ button.btn{
 }
 th{
     border: none;
+    padding: 5px;
 }
 
 /* オーバーレイ */

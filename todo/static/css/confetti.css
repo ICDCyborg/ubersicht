@@ -17,7 +17,7 @@
 .confetti {
 	position: absolute;
 	width: 100%;
-	height: 100%;
+	height: 0%;
 }
 
 .confetti span {
@@ -271,7 +271,7 @@
 }
 
 .confetti span:nth-child(4n+3) {
-	animation-duration: 5s;
+	animation-duration: 3s;
 }
 
 .confetti span:nth-child(4n+4) {
@@ -285,7 +285,7 @@
 }
 
 .confetti span:nth-child(11n+2) {
-	animation-delay: 9s;
+	animation-delay: 3.5s;
 }
 
 .confetti span:nth-child(11n+3) {
@@ -301,7 +301,7 @@
 }
 
 .confetti span:nth-child(11n+6) {
-	animation-delay: 7s;
+	animation-delay: 2.5s;
 }
 
 .confetti span:nth-child(11n+7) {
