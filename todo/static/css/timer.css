@@ -12,6 +12,25 @@ body {
     margin: 20px 0;
 }
 
+#timer-wrapper {
+    border: 5px solid #333;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    background-color: white;
+    width: 300px;
+    margin: 20px auto;
+}
+
+#timerField .overlay-content{
+    width:400px;
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
 button {
     font-size: 16px;
     padding: 10px 20px;

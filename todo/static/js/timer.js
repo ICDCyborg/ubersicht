@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const timerDisplay = document.getElementById("timer");
     const timerWrapper = document.getElementById("timer-wrapper");
+    const timerField = document.getElementById("timerField");
     const startButton = document.getElementById("start");
     const pauseButton = document.getElementById("pause");
     const alarmSound = document.getElementById("alarm");
@@ -10,8 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let remainingTime = 0; // 残り時間を追加
 
     // クエリパラメータからタイマーの分数を取得
-    const urlParams = new URLSearchParams(window.location.search);
-    const initialMinutes = parseInt(urlParams.get("timer")) || 10;
+    const initialMinutes = parseInt(timerField.getAttribute("data-minutes")) || 10;
     timerDisplay.textContent = `${String(initialMinutes).padStart(2, '0')}:00`;
 
     function startTimer(minutes) {
@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!isPaused) {
             clearInterval(countdown);
             isPaused = true;
-            timerWrapper.style.backgroundColor = "lightyellow"; // 背景色を薄い黄色に設定
+            timerWrapper.style.backgroundColor = "orange"; 
         }
     });
 });

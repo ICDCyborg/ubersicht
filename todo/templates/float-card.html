@@ -28,10 +28,13 @@
             <a href="{% url "todo:goal_config" %}" class="btn">目標を設定</a>
             {% endif %}
 
-            <a href="{% url "accounts:user_change" pk=user.pk %}" class="iconlink"><img src="{% static "assets/icon/user.png" %}" alt="ユーザ設定" class="icon">ユーザ設定</a>
-            <a href="{% url "todo:goal_config" %}" class="iconlink"><img src="{% static "assets/icon/flag.png" %}" alt="目標設定" class="icon">目標設定</a>
-            <a href="{% url "todo:journal" %}" class="iconlink"><img src="{% static "assets/icon/journal.png" %}" alt="ジャーナル" class="icon">ジャーナル</a>
-            <a href="{% url "accounts:logout" %}" class="iconlink"><img src="{% static "assets/icon/exit.png" %}" alt="ログアウト" class="icon">ログアウト</a>
+            <div class="menu-container">
+                <a href="{% url "todo:main"%}" class="iconlink"><img src="{% static "assets/icon/home.png" %}" alt="ホーム" class="icon">ホーム</a>
+                <a href="{% url "todo:journal" %}" class="iconlink"><img src="{% static "assets/icon/journal.png" %}" alt="ジャーナル" class="icon">ジャーナル</a>
+                <a href="{% url "accounts:user_change" pk=user.pk %}" class="iconlink"><img src="{% static "assets/icon/user.png" %}" alt="ユーザ設定" class="icon">ユーザ設定</a>
+                <a href="{% url "todo:goal_config" %}" class="iconlink"><img src="{% static "assets/icon/flag.png" %}" alt="目標設定" class="icon">目標設定</a>
+                <a href="{% url "accounts:logout" %}" class="iconlink"><img src="{% static "assets/icon/exit.png" %}" alt="ログアウト" class="icon">ログアウト</a>
+            </div>
         </div>
         <div id="right-pane">
             <div id="toggle-button">&raquo;</div>

@@ -6,7 +6,7 @@
     <div class="card-body">
         <h1 class="card-title">ジャーナル</h1>
         {% for day in object_list %}
-        {% if day.0.date >= today %}
+        {% if day.0.date > today %}
         <h2 style="margin: 0; font-size:1em; font-weight: normal; color:#ccc;">{{day.0.date}}</h2>
         {% else %}
         <h2 style="margin: 0;">{{day.0.date}}</h2>

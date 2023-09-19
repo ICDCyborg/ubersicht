@@ -1,6 +1,9 @@
 {% extends "float-card.html" %}
 {% load static %}
 {% block title %}{{ todo.title }}{% endblock title %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/timer.css' %}">
+{% endblock style %}
 {% block contents %}
 <div class="card">
     <div class="card-title">
@@ -62,22 +65,22 @@
         {% comment %} ボタン類 {% endcomment %}
         <div class="icon_container">
             <div id="addRecord">
-                <img src="{% static "assets/icon/pencil.png" %}" alt="記録追加" class="icon">
+                <img src="{% static "assets/icon/pencil.png" %}" title="記録追加" alt="記録追加" class="icon">
             </div>
-            <div id="timer">
-                <img src="{% static "assets/icon/timer.png" %}" alt="タイマー" class="icon">
+            <div id="showTimer">
+                <img src="{% static "assets/icon/timer.png" %}" title="タイマー" alt="タイマー" class="icon">
             </div>
             <a href="{% url "todo:todo_delete" pk=todo.pk %}">
-                <img src="{% static "assets/icon/delete.png" %}" alt="削除" class="icon">
+                <img src="{% static "assets/icon/delete.png" %}" title="削除" alt="削除" class="icon">
             </a>
             <a href="{% url "todo:todo_config" pk=todo.pk %}">
-                <img src="{% static "assets/icon/config.png" %}" alt="設定" class="icon">
+                <img src="{% static "assets/icon/config.png" %}" title="設定" alt="設定" class="icon">
             </a>
             <a href="{% url "todo:todo_complete" pk=todo.pk %}">
-                <img src="{% static "assets/icon/check.png" %}" alt="完了" class="icon">
+                <img src="{% static "assets/icon/check.png" %}" title="完了" alt="完了" class="icon">
             </a>
             <a href="{% url "todo:main" %}">
-                <img src="{% static "assets/icon/back.png" %}" alt="戻る" class="icon">
+                <img src="{% static "assets/icon/back.png" %}" title="戻る" alt="戻る" class="icon">
             </a>
         </div>
     </div>
@@ -135,10 +138,19 @@
     </div>
 </div>
 
-<div class="overlay" id="timerField">
+<div class="overlay" id="timerField" data-minutes={{todo.timer}}>
     <div class="overlay-content">
         <h3>タイマー</h3>
-        <div class="btn" id="hideTimerButton"></div>
+        <div id="timer-wrapper">
+            <div id="timer">00:00</div>
+        </div>
+        <button id="start" class="btn">Start</button>
+        <button id="pause" class="btn">Pause</button>
+        
+        <audio id="alarm" src="{% static 'sound/Clock-Alarm03-01(Mid-Loop).mp3' %}" preload="auto"></audio>
+        
+        <div class="btn" id="hideTimer">閉じる</div>
+        <script src="{% static 'js/timer.js' %}"></script>
     </div>
 </div>
 
@@ -161,6 +173,9 @@
     // ボタンのクリックイベントを設定
     addRecordButton.addEventListener('click', showAddRecordField);
     hideAddRecordButton.addEventListener('click', hideAddRecordField);
+    addRecordField.addEventListener('click', function (event) {
+        if (event.target === addRecordField) { hideAddRecordField() }
+    })
 
     ////////////タイマーボタン//////////////
     // オーバーレイを表示するボタン
@@ -181,5 +196,8 @@
     // ボタンのクリックイベントを設定
     showTimerButton.addEventListener('click', showTimerField);
     hideTimerButton.addEventListener('click', hideTimerField);
+    timerField.addEventListener('click', function(event) {
+        if (event.target === timerField) { hideTimerField() }
+    })
 </script>
 {% endblock contents %}

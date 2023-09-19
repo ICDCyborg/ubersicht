@@ -67,11 +67,11 @@ body {
 
 .card {
     position: relative;
-    flex-basis: calc(50% - 20px);
+    width: calc(50% - 20px);
     box-sizing: border-box;
     padding: 0px;
     padding-bottom: 70px;
-    background-color: #fff;
+    background-color: #FFF;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     min-height: 200px; /* 追加 */
@@ -93,7 +93,9 @@ body {
     display: flex;
     align-items: center;
     margin-left: 20px;
-    text-wrap: nowrap;
+    text-wrap: wrap;
+    max-width: 90%;
+    /* text-wrap: nowrap; */
 }
 .card-body{
     padding:0px 20px;
@@ -149,7 +151,7 @@ body {
     height: 60px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     #left-pane {
         width: 0;
         overflow: hidden;
@@ -163,6 +165,11 @@ body {
         flex-basis: 100%;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
+    }
+}
+@media (max-width:500px){
+    .card{
+        width: calc(100% - 20px);
     }
 }
 
@@ -214,7 +221,7 @@ body {
     margin:0;
 }
 .iconlink{
-    width: 200px;
+    width: 150px;
     /* flex-basis: 80px; */
     color:#fff;
     margin:10px;
@@ -235,6 +242,11 @@ body {
 }
 .justify-content-between{
     justify-content: space-between;
+}
+.menu-container{
+    display:flex;
+    flex-direction:row;
+    flex-wrap: wrap;
 }
 
 .heart{
@@ -258,9 +270,13 @@ body {
     padding: 5px 10px;
     text-decoration: none;
     margin: 10px;
+    align-self: flex-start;
 }
 .btn:hover{
     background: #BB0;
+}
+button.btn{
+    font-size: 1.03em;
 }
 
 .records{
@@ -285,6 +301,7 @@ body {
     display: none;
     justify-content: center;
     align-items: center;
+    z-index: 100;
 }
 
 .overlay-content {
@@ -293,4 +310,5 @@ body {
     border-radius: 10px;
     width: 80%; /* オーバーレイの幅を設定します */
     max-width: 600px; /* 最大幅を設定します */
+    display: block;
 }
