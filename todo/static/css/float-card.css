@@ -289,6 +289,9 @@ button.btn{
 .memo{
     white-space: pre-wrap;
 }
+th{
+    border: none;
+}
 
 /* オーバーレイ */
 .overlay {
@@ -310,5 +313,6 @@ button.btn{
     border-radius: 10px;
     width: 80%; /* オーバーレイの幅を設定します */
     max-width: 600px; /* 最大幅を設定します */
-    display: block;
+    display: flex;
+    align-content: center;
 }

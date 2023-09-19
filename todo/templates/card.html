@@ -3,6 +3,7 @@
 {% block title %}{{ todo.title }}{% endblock title %}
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/timer.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/confetti.css" %}">
 {% endblock style %}
 {% block contents %}
 <div class="card">
@@ -122,11 +123,10 @@
     {% endif %}
 </div>
 
-
 <div class="overlay" id="addRecordField">
     <div class="overlay-content" style="width:300px;">
         <h3>{{todo.title}} : 記録の追加</h3>
-        <form action="{% url "todo:record_add" %}" method="get">
+        <form action="" method="get">
             {% csrf_token %}
             <input type="hidden" name="todo" id="id_todo" value="{{todo.pk}}">
             <input type="number" name="num" id="id_num" placeholder="数を入力（必須）"> : {{ todo.unit }} <br>
@@ -153,6 +153,27 @@
         <script src="{% static 'js/timer.js' %}"></script>
     </div>
 </div>
+
+{% if confetti %}
+こんふぇってぃー
+<div class="overlay" id="accomplish">
+    <div class="overlay-content">
+        <div class="confetti"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <h3>おめでとうございます！</h3>
+        <p>記録を追加し、目標に一歩近づきました。</p>
+    </div>
+</div>
+<script>
+    const accomplishField = document.getElementById('accomplish');
+    function hideAccomplishField () {
+        accomplishField.style.display = 'none';
+    }
+    accomplishField.addEventListener( 'click', function(event){
+        if (event.target === accomplishField) { hideAccomplishField(); }
+    });
+    accomplishField.style.display = 'flex';
+</script>
+{% endif %}
 
 <script>
     ////////////記録追加ボタン//////////////
