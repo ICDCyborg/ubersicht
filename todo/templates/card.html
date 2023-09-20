@@ -101,8 +101,8 @@
             {% for record in records %}
             <tr>
                 <td>
-                    <a href="{% url "todo:record_delete" pk=record.pk %}">
-                        <img src="{% static "assets/icon/delete.png" %}" alt="" class="icon icon-small">
+                    <a href="{% url "todo:record_delete" pk=record.pk %}" class="iconlink">
+                        <img src="{% static "assets/icon/delete.png" %}" alt="削除" title="削除" class="icon icon-small">
                     </a>
                 </td>
                 <td>{{ record.done_at|date:"m月d日 h:m" }}</td>

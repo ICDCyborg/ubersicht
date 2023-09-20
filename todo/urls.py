@@ -22,10 +22,11 @@ urlpatterns = [
     path('todo/delete/<int:pk>', TodoDeleteView.as_view(), name='todo_delete'),
     path('todo/pin/<int:pk>', pin_todo, name='pin'),
     # 実施記録の作成、閲覧、削除
-    path('record/add/<int:pk>', RecordView.as_view(), name='record'),
-    path('record/add/done/', RecordAddView.as_view(), name='record_add'),
-    path('record/<int:pk>', RecordListView.as_view(), name='record_list'),
     path('record/delete/<int:pk>', record_delete, name='record_delete'),
-    path('timer/', TimerView.as_view(), name='timer'),
     path('journal/', JournalView.as_view(), name='journal'),
+    ### 以下はtodo_detailに統合済み ###
+    # path('record/add/<int:pk>', RecordView.as_view(), name='record'),
+    # path('record/add/done/', RecordAddView.as_view(), name='record_add'),
+    # path('record/<int:pk>', RecordListView.as_view(), name='record_list'),
+    # path('timer/', TimerView.as_view(), name='timer'),
 ]

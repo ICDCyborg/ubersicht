@@ -1,15 +1,15 @@
-{% extends 'base.html' %}
+{% extends 'float-card.html' %}
 {% load static %}
 {% block title %}{{ title }}{% endblock title %}
 {% block contents %}
-<div class="container">
-    <div class="row">
+<div class="card-wide">
+    <div class="card-body">
         <div class="col offset-4 py-4">
             <h3>{{ message }}</h3>
             {% if user.is_authenticated %}
-            <p><a href="{% url 'todo:main' %}" class="btn btn-primary">メインページ</a></p>
+            <p><a href="{% url 'todo:main' %}" class="btn">メインページ</a></p>
             {% else %}
-            <p><a href="{% url 'todo:index' %}" class="btn btn-primary">戻る</a></p>
+            <p><a href="{% url 'todo:index' %}" class="btn">戻る</a></p>
             {% endif %}
         </div>
     </div>
