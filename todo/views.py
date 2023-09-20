@@ -76,13 +76,24 @@ class MainView(GetGoal, ListView):
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         active_todos = Todos.objects.filter(goal=get_goal(self.request.user)).exclude(state=State.COMPLETED.value)
-        if 'goal' not in context:
-            context['note'] = Note('目標未設定', '目標が設定されていません。', 
+        if not get_goal(self.request.user):
+            if Goals.objects.filter(user=self.request.user).exists():
+                context['note'] = Note('目標未設定', '目標が設定されていません。', 
+                            button='目標を設定', link=reverse_lazy('todo:goal_config'))
+            else:
+                context['note'] = Note('目標未設定', '初めての目標を設定しましょう。\n'
+                                    '最初は1週間～1か月程度で達成できる、小さな目標がおすすめです。\n\n'
+                                    '例：\n'
+                                    '・〇〇の資格を取る\n'
+                                    '・ダイエットする\n'
+                                    '・曲を演奏できるようになる\n'
+                                    '・プログラミングを勉強する\n'
+                                    '　　　……等', 
                             button='目標を設定', link=reverse_lazy('todo:goal_config'))
         elif not active_todos.exists():
             context['note'] = Note('タスク未設定', '現在のタスクがありません。\nまずは指標を設定してみませんか？\n'
                                 'テストなら模試、ダイエットなら体重測定など、自分の現在地を定期的に知ることが大事です。',
-                                button='指標を追加', link=reverse_lazy('todo:todo_create', type='exam'))
+                                button='指標を追加', link=reverse_lazy('todo:todo_create', kwargs={'type':'exam'}))
         context['today'] = date.today()
         return context
 
@@ -201,10 +212,10 @@ class TodoCreateView(TodoFormBaseView, CreateView):
     '''Todo作成ページ'''
     def get_initial(self) -> dict[str, Any]:
         initial = super().get_initial()
-        slug = self.kwargs['type']
-        if slug in TypeChoices:
-            initial['type'] = TypeChoices(slug)
-        initial['until_date'] = date.today()
+        if 'type' in self.kwargs:
+            slug = self.kwargs['type']
+            if slug in TypeChoices:
+                initial['type'] = TypeChoices(slug)
         return initial
 
 @method_decorator(login_required, name='dispatch')
@@ -344,12 +355,10 @@ def record_delete(request, pk):
 def pin_todo(request, pk):
     '''Todoのピン状態を切り替える'''
     todo = Todos.objects.get(pk=pk)
-    print('pin!'+todo.title+str(todo.state))
     if todo.state == State.PINNED.value:
         todo.state = State.NORMAL.value
     elif todo.state == State.NORMAL.value:
         todo.state = State.PINNED.value
-    print('pin!!!'+todo.title+str(todo.state))
     todo.save()
     return redirect('todo:main')
 
@@ -379,7 +388,7 @@ class JournalView(GetGoal, TemplateView):
         journals.sort(key=lambda x: x.date, reverse=True)
         object_list = []
         temp_list = []
-        # 同じ日付の行は同じイメモにつき1つのイメモにつき1行
+        # 同じ日付の行は同じメモにつき1行
         for j in journals:
             if len(temp_list) == 0:
                 temp_list.append(j)

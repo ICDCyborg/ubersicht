@@ -24,8 +24,10 @@
                 </div>
             </div>
             {% else %}
-            <div>目標が設定されていません。</div>
-            <a href="{% url "todo:goal_config" %}" class="btn">目標を設定</a>
+            <div style="margin:10px;">
+                <div>目標が設定されていません。</div>
+                <a href="{% url "todo:goal_config" %}" class="btn">目標を設定</a>
+            </div>
             {% endif %}
 
             <div class="menu-container">

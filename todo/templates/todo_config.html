@@ -1,4 +1,5 @@
 {% extends 'float-card.html' %}
+{% load static %}
 {% block title %}タスク設定{% endblock title %}
 {% block contents %}
 <div class="card-wide">
@@ -8,6 +9,26 @@
             <form action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <table border=0>
+                    <tr>
+                        <th>種別：</th>
+                        <td>
+                            {% comment %} ボタン類 {% endcomment %}
+                            <div class="icon_container" style="width:300px; margin-bottom:30px;">
+                                <a href="" class="iconlink">
+                                    <img src="{% static "assets/icon/check.png" %}" title="タスク" alt="タスク" class="icon">
+                                </a>
+                                <a href="" class="iconlink">
+                                    <img src="{% static "assets/icon/muscle.png" %}" title="トレーニング" alt="トレーニング" class="icon">
+                                </a>
+                                <a href="" class="iconlink">
+                                    <img src="{% static "assets/icon/book.png" %}" title="読書" alt="読書" class="icon">
+                                </a>
+                                <a href="" class="iconlink">
+                                    <img src="{% static "assets/icon/measure.png" %}" title="指標" alt="指標" class="icon">
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
                     <tr>
                         <th>期日：</th>
                         <td><input type="date" name="until_date" value="{{ form.until_date.value|date:'Y-m-d' }}" id="id_until_date" autofocus> までに、</td>
@@ -20,12 +41,12 @@
                         <th>やる事：</th>
                         <td>{{ form.title }}</td>
                     </tr>
-                    <tr>
+                    {% comment %} <tr>
                         <th>画像：</th>
                         <td>{{ form.image }}</td>
-                    </tr>
+                    </tr> {% endcomment %}
                     <tr>
-                        <th>タイマー：</th>
+                        <th>タイマー：<br>（規定値）</th>
                         <td>{{ form.timer }}　分</td>
                     </tr>
                     <tr>

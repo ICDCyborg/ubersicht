@@ -13,9 +13,7 @@
         <img src="{% static "assets/icon/warning.png" %}" alt="警告" class="icon" style="background: #FD0;">
         <h2>{{ note.title }}</h2>
     </div>
-    <div class="card-body">
-        {{ note.content }}
-    </div>
+    <div class="card-body memo">{{ note.content }}</div>
     {% if note.button %}
     <div class="card-footer">
         <div class="d-flex card-footer justify-content-between">
@@ -46,7 +44,7 @@
         {% if todo.is_completed %}
         {% comment %} 完了済み(緑) {% endcomment %}
         style="background:#3D3;"
-        {% elif todo.until_date < today %}
+        {% elif todo.is_expired %}
         {% comment %} 期限切れ(赤) {% endcomment %}
         style="background:#F00;"
         {% else %}
@@ -63,6 +61,13 @@
     <div class="progBar">
         <div class="bar-completed">
             <div class="bar-label">完了済み</div>
+        </div>
+    </div>
+    {% elif todo.percent is not None and todo.is_expired %}
+    {% comment %} 期限切れのタスク {% endcomment %}
+    <div class="progBar">
+        <div class="bar-expired" style="width:{{todo.percent}}%">
+            <div class="bar-label">{{ todo.percent|floatformat:1 }}% (期限切れ)</div>
         </div>
     </div>
     {% elif todo.percent is not None %}
