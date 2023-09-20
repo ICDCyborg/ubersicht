@@ -12,13 +12,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // クエリパラメータからタイマーの分数を取得
     const initialMinutes = parseInt(timerField.getAttribute("data-minutes")) || 10;
-    timerDisplay.textContent = `${String(initialMinutes).padStart(2, '0')}:00`;
+    timerDisplay.value = `${String(initialMinutes).padStart(2, '0')}:00`;
 
     function startTimer(minutes) {
         isPaused = false;
+        timerDisplay.disabled = true;
         timerWrapper.style.backgroundColor = "white"; // 背景色を白色に設定
-
-        // タイマーが再開される場合、現在の残り時間を使用
+        
+        // ユーザーの入力から残り秒数を計算
+        const inputTime = timerDisplay.value.split(":");
+        const inputMinutes = parseInt(inputTime[0]) || 0;
+        const inputSeconds = parseInt(inputTime[1]) || 0;
+        remainingTime = inputMinutes * 60 * 1000 + inputSeconds * 1000;
         const endTime = Date.now() + (remainingTime || minutes * 60 * 1000);
 
         function updateTimer() {
@@ -26,12 +31,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (remainingTime <= 0) {
                 clearInterval(countdown);
-                timerDisplay.textContent = "00:00";
+                timerDisplay.value = "00:00";
                 alarmSound.play();
             } else {
                 const minutes = Math.floor(remainingTime / 1000 / 60);
                 const seconds = Math.floor((remainingTime / 1000) % 60);
-                timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                timerDisplay.value = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             }
         }
 
@@ -49,6 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!isPaused) {
             clearInterval(countdown);
             isPaused = true;
+            timerDisplay.disabled = false;
             timerWrapper.style.backgroundColor = "orange"; 
         }
     });

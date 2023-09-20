@@ -16,6 +16,7 @@ urlpatterns = [
     path('achievement/', AchievementView.as_view(), name='achievement'),
     # Todoの作成、閲覧、編集、削除
     path('todo/create/', TodoCreateView.as_view(), name='todo_create'),
+    path('todo/create/<slug:type>', TodoCreateView.as_view(), name='todo_create'),
     path('todo/<int:pk>', TodoDetailView.as_view(), name='todo_detail'),
     path('todo/config/<int:pk>', TodoConfigView.as_view(), name='todo_config'),
     path('todo/complete/<int:pk>', TodoCompleteView.as_view(), name='todo_complete'),

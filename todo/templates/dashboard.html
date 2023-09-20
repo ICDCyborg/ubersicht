@@ -30,17 +30,30 @@
 <div class="card">
     {% comment %} カードタイトル {% endcomment %}
     <div class="card-title">
+        <img 
         {% if todo.type == 'reading' %}
-        <img src="{% static "assets/icon/book.png" %}" alt="読書" class="icon">
+        src="{% static "assets/icon/book.png" %}" alt="読書"
         {% elif todo.type == 'exam' %}
-        <img src="{% static "assets/icon/measure.png" %}" alt="指標" class="icon">
+        src="{% static "assets/icon/measure.png" %}" alt="指標"
         {% elif todo.type == 'training' %}
-        <img src="{% static "assets/icon/muscle.png" %}" alt="トレーニング" class="icon">
+        src="{% static "assets/icon/muscle.png" %}" alt="トレーニング"
         {% elif todo.type == 'task' %}
-        <img src="{% static "assets/icon/check.png" %}" alt="タスク" class="icon">
+        src="{% static "assets/icon/check.png" %}" alt="タスク"
         {% elif todo.type == 'memo' %}
-        <img src="{% static "assets/icon/memo.png" %}" alt="メモ" class="icon">
+        src="{% static "assets/icon/memo.png" %}" alt="メモ"
         {% endif %}
+
+        {% if todo.is_completed %}
+        {% comment %} 完了済み(緑) {% endcomment %}
+        style="background:#3D3;"
+        {% elif todo.until_date < today %}
+        {% comment %} 期限切れ(赤) {% endcomment %}
+        style="background:#F00;"
+        {% else %}
+        {% comment %} 通常(黄色) {% endcomment %}
+        style="background:#FC0;"
+        {% endif %}
+        class="icon">
         <h2>{{ todo.title }}</h2>
     </div>
     

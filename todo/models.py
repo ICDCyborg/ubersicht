@@ -147,12 +147,12 @@ class Todos(models.Model):
             return 0
         else:
             return (self.until_date - self.from_date).days
-    
+
     @property
     def record_memo(self) -> str:
         '''最新のレコードメモを日付つきで返す'''
         try:
-            r = Records.objects.filter(todo=self, memo__isnull=False).latest('done_at')
+            r = Records.objects.filter(todo=self, memo__isnull=False).exclude(memo__exact='').latest('done_at')
             return r.done_at.strftime('(%m/%d)') + ' ' + r.memo
         except Records.DoesNotExist:
             return ''

@@ -8,17 +8,22 @@
 {% block contents %}
 <div class="card">
     <div class="card-title">
+        <img 
         {% if todo.type == 'reading' %}
-        <img src="{% static "assets/icon/book.png" %}" alt="読書" class="icon">
+        src="{% static "assets/icon/book.png" %}" alt="読書"
         {% elif todo.type == 'exam' %}
-        <img src="{% static "assets/icon/measure.png" %}" alt="指標" class="icon">
+        src="{% static "assets/icon/measure.png" %}" alt="指標"
         {% elif todo.type == 'training' %}
-        <img src="{% static "assets/icon/muscle.png" %}" alt="トレーニング" class="icon">
+        src="{% static "assets/icon/muscle.png" %}" alt="トレーニング"
         {% elif todo.type == 'task' %}
-        <img src="{% static "assets/icon/check.png" %}" alt="タスク" class="icon">
+        src="{% static "assets/icon/check.png" %}" alt="タスク"
         {% elif todo.type == 'memo' %}
-        <img src="{% static "assets/icon/memo.png" %}" alt="メモ" class="icon">
+        src="{% static "assets/icon/memo.png" %}" alt="メモ"
         {% endif %}
+        {% if not todo.is_completed and todo.until_date < today %}
+        style="background:red;"
+        {% endif %}
+        class="icon">
         <h1>{{ todo.title }}</h1><br>
     </div>
     <div class="card-body">
@@ -47,15 +52,14 @@
         {% endif %}
         
         {% comment %} 予定日 {% endcomment %}
-        {% if todo.until_date and todo.every_ndays %}
-        {% comment %} 繰り返しの場合 {% endcomment %}
-        {% if todo.until_date == today %}
-        <h3>本日予定日</h3>
-        {% else %}
-        <h3>次回予定：{{ todo.until_date| date:"m月d日" }}</h3>
-        {% endif %}
-        {% elif todo.until_date %}
-        <h3>終了予定：{{ todo.until_date| date:"m月d日" }}</h3>
+        {% if not todo.is_completed %}
+            {% if todo.until_date == today %}
+            <h3>本日予定日</h3>
+            {% elif todo.until_date < today %}
+            <h3 style="color:red;">終了予定：{{ todo.until_date| date:"m月d日" }}</h3>
+            {% elif todo.until_date %}
+            <h3>終了予定：{{ todo.until_date| date:"m月d日" }}/{{ today}}</h3>
+            {% endif %}
         {% endif %}
 
         {% comment %} メモ {% endcomment %}
@@ -142,7 +146,7 @@
     <div class="overlay-content">
         <h3>タイマー</h3>
         <div id="timer-wrapper">
-            <div id="timer">00:00</div>
+            <input type="text" id="timer" value="00:00">
         </div>
         <button id="start" class="btn">Start</button>
         <button id="pause" class="btn">Pause</button>
@@ -160,6 +164,10 @@
         <div class="confetti"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
         <h3>おめでとうございます！</h3>
         <p>記録を追加し、目標に一歩近づきました。</p>
+        <p>
+            {% comment %} SNSへの共有リンク {% endcomment %}
+            <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="{{ congrats }}:{{ objective }}" data-url="{% url 'todo:index' %}" data-hashtags="ubersicht" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        </p>
     </div>
 </div>
 <script>

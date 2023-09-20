@@ -1,4 +1,5 @@
 # UserCreationFormのインポート
+from typing import Any
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 # models.pyで定義したCustomUserモデルをインポート
 from .models import CustomUser
@@ -9,6 +10,12 @@ class CustomUserCreationForm(UserCreationForm):
     '''
     UserCreationFormを継承したクラス
     '''
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.fields['dream'].label = 'なりたい自分（任意）'
+        self.fields['dream'].widget.attrs['placeholder'] = 'あなたはどんな自分になりたいですか？\n目標を達成した後どんな自分になっていると思いますか？\n少し時間をとって考えてみてください。'
+        return
     class Meta:
         '''
         UserCreationFormのメタクラス

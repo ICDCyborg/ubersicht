@@ -30,7 +30,7 @@ class MailScheduler:
         # 呼びかけ
         body = f'{goal.user.username}さん\n'
 
-        # 期限に対応した一言挨拶
+        # 目標の期限に対応した一言挨拶
         if goal.days_left == 0:
             body += '今日が目標の期日でしたね！\n結果はどうでしたか？\n'
             body += 'ぜひログインして、結果を教えてください！\n'
@@ -67,13 +67,37 @@ class MailScheduler:
                                         until_date=date.today())
         for todo in comp_todos:
             body += f'●{todo.title}...完了！\n'
+        
+        # 明日の予定（明日が期限のタスク）
+        active_todos = Todos.objects.filter(goal=goal).exclude(state=State.COMPLETED.value)
+        tommorow_todos = active_todos.filter(until_date=date.today()+timedelta(days=1))
+        # 未完了のTodoが無い
+        if not active_todos.exists():
+            body += '\nやる事が設定されていません。\n'
+        # 明日終了予定の未完了のTodoが無い
+        elif not tommorow_todos.exists():
+            nearest_todo = active_todos.order_by('until_date')[0]
+            body += f'{nearest_todo.until_date:%#m月%#d日}の予定\n●{nearest_todo.title}\n'
+        # 明日終了予定の未完了のTodoが有る
+        else:
+            body += '\n明日の予定：\n'
+            for todo in tommorow_todos:
+                body += f'●{todo.title}\n'
+
+        # 期限切れのタスク
+        expired_todos = active_todos.filter(until_date__lt=date.today())
+        if expired_todos.exists():
+            body += '\n期限切れの予定：\n'
+            for todo in expired_todos:
+                body += f'●{todo.title}...{todo.until_date:%#m月%#d日}まで\n'
+            body += '※既に完了していますか？ログインして完了済みにして下さい。'
 
         # 明日も頑張りましょう！
         body += '\n今日も一日お疲れさまでした！\n明日も頑張っていきましょう。\n'
 
         # クレジット、リンク
         body += '\n----------------\n'
-        body += 'ubersicht 2023 all rights reserved.\n'
+        body += 'copyright ubersicht 2023 all rights reserved.\n'
 
         email = EmailMessage(subject, body, to=to_list)
         email.send()

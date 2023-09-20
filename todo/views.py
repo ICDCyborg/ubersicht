@@ -19,7 +19,7 @@ from django.shortcuts import redirect
 from datetime import date, datetime, timedelta
 
 from . import forms
-from .models import Goals, Todos, Records, State, JournalLine
+from .models import Goals, Todos, Records, State, JournalLine, TypeChoices
 
 # Create your views here.
 def get_goal(user) -> Optional[Goals]:
@@ -75,9 +75,15 @@ class MainView(GetGoal, ListView):
     
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
+        active_todos = Todos.objects.filter(goal=get_goal(self.request.user)).exclude(state=State.COMPLETED.value)
         if 'goal' not in context:
             context['note'] = Note('目標未設定', '目標が設定されていません。', 
                             button='目標を設定', link=reverse_lazy('todo:goal_config'))
+        elif not active_todos.exists():
+            context['note'] = Note('タスク未設定', '現在のタスクがありません。\nまずは指標を設定してみませんか？\n'
+                                'テストなら模試、ダイエットなら体重測定など、自分の現在地を定期的に知ることが大事です。',
+                                button='指標を追加', link=reverse_lazy('todo:todo_create', type='exam'))
+        context['today'] = date.today()
         return context
 
 @method_decorator(login_required, name='dispatch')
@@ -193,7 +199,13 @@ class TodoConfigView(TodoFormBaseView, UpdateView):
 @method_decorator(login_required, name='dispatch')
 class TodoCreateView(TodoFormBaseView, CreateView):
     '''Todo作成ページ'''
-    ...
+    def get_initial(self) -> dict[str, Any]:
+        initial = super().get_initial()
+        slug = self.kwargs['type']
+        if slug in TypeChoices:
+            initial['type'] = TypeChoices(slug)
+        initial['until_date'] = date.today()
+        return initial
 
 @method_decorator(login_required, name='dispatch')
 class TodoCompleteView(GetGoal, TemplateView):
@@ -300,6 +312,7 @@ class TodoDetailView(GetGoal, DetailView):
         context = super().get_context_data(**kwargs)
         context['chart'] = chart
         context['records'] = records.order_by('-done_at')
+        context['today'] = date.today()
         if self.request.GET.get('todo'):
             context['confetti'] = True
         return context
