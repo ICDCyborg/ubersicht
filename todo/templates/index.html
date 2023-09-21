@@ -2,7 +2,9 @@
 {% load static %}
 {% block title %}Ubersicht - 目標達成をサポートするToDoアプリ{% endblock title %}
 {% block style %}
-
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+</style>
 <style>
     .dictionary-entry {
         background-color: #fff;
@@ -34,7 +36,7 @@
 <header class="masthead">
     <div class="container">
         <div class="masthead-subheading ">目標達成をサポートするToDoアプリ</div>
-        <div class="masthead-heading text-uppercase">Ubersicht</div>
+        <div class="masthead-heading marker"><div class="squashed">(Ü)</div>bersicht</div>
         
         {% if user.is_authenticated %}
         <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'todo:main' %}">メインページへ</a>
@@ -48,8 +50,8 @@
 <section class="page-section" id="services">
     <div class="container">
         <div class="text-center">
-            <h2 class="section-heading text-uppercase">特徴</h2>
-            <p>Ubersicht （ユーバージヒト）は「上からの視点」という意味を持ち、「展望、見通し」を表すドイツ語です。<br>
+            <h2 class="section-heading text-uppercase">特長</h2>
+            <p><strong>Ubersicht （ユーバージヒト）</strong>は「上からの視点」という意味を持ち、「展望、見通し」を表すドイツ語です。<br>
 上空から見下ろすように、現在位置を明確にし、目的地までの道程を見通すあなた専用のナビゲーターに。<br><br>
 
 Ubersichtはコーチングの手法を取り入れた、全く新しいTodoアプリです。</p><br>

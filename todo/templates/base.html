@@ -36,16 +36,26 @@
                 position:relative;
                 padding-left: 1em;
             }
+            .marker{
+                font-family: 'Permanent Marker', cursive !important;
+            }
+            .squashed{
+                display: inline-block;
+                scale:1 0.7;
+                translate:0% 10%;
+            }
         </style>
         <!-- Responsive navbar-->
         <nav class="navbar navbar-expand-md navbar-dark bg-dark">
             <div class="container">
                 {% comment %} ロゴマーク：Todo　リンクを入れる　フォントをかっこよくする {% endcomment %}
+                <a 
                 {% if user.is_authenticated %}
-                <a class="navbar-brand px-5" href="{% url 'todo:main' %}">Ubersicht</a>
+                href="{% url 'todo:main' %}"
                 {% else %}
-                <a class="navbar-brand px-5" href="{% url 'todo:index' %}">Ubersicht</a>
+                href="{% url 'todo:index' %}"
                 {% endif %}
+                class="navbar-brand px-5 marker"><div class="squashed">(Ü)</div>bersicht</a>
                 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     {% if user.is_authenticated %}

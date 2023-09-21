@@ -123,6 +123,17 @@
     {% else %}
     <div class="card-title">
         <h2>まだ記録がありません。</h2>
+        {% if todo.type == 'training' %}
+        <p>トレーニングを実施したら最初の記録をつけましょう！</p>
+        {% elif todo.type == 'reading' %}
+        <p>勉強を実施したら最初の記録をつけましょう！</p>
+        {% elif todo.type == 'exam' %}
+        <p>指標測定を実施したら最初の記録をつけましょう！</p>
+        {% endif %}
+        <div id="addRecord2" class="iconlink">
+            <img src="{% static "assets/icon/pencil.png" %}" title="記録追加" alt="記録追加" class="icon">
+            記録の追加
+        </div>
     </div>
     {% endif %}
 </div>
@@ -146,7 +157,7 @@
     <div class="overlay-content">
         <h3>タイマー</h3>
         <div id="timer-wrapper">
-            <input type="text" id="timer" value="00:00">
+            <input type="text" id="timer" value="01:00">
         </div>
         <button id="start" class="btn">Start</button>
         <button id="pause" class="btn">Pause</button>
@@ -158,6 +169,7 @@
     </div>
 </div>
 
+{% comment %} 記録追加後のお祝いメッセージ {% endcomment %}
 {% if confetti %}
 <div class="overlay" id="accomplish">
     <div class="overlay-content">
@@ -166,7 +178,10 @@
         <p>記録を追加し、目標に一歩近づきました。</p>
         <p>
             {% comment %} SNSへの共有リンク {% endcomment %}
-            <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="{{ congrats }}:{{ objective }}" data-url="{% url 'todo:index' %}" data-hashtags="ubersicht" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" 
+            data-text="今日やった:{{ todo.title }}……{{records.0.num}}{{todo.unit}}" data-url="{% url 'todo:index' %}" 
+            data-hashtags="ubersicht" data-show-count="false">Tweet</a>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
         </p>
     </div>
 </div>
@@ -186,6 +201,7 @@
     ////////////記録追加ボタン//////////////
     // オーバーレイを表示するボタン
     const addRecordButton = document.getElementById('addRecord');
+    const addRecordButton2 = document.getElementById('addRecord2');
     // オーバーレイを非表示にするボタン
     const hideAddRecordButton = document.getElementById('hideAddRecord');
     // オーバーレイ要素
@@ -200,6 +216,7 @@
     }
     // ボタンのクリックイベントを設定
     addRecordButton.addEventListener('click', showAddRecordField);
+    addRecordButton2.addEventListener('click', showAddRecordField);
     hideAddRecordButton.addEventListener('click', hideAddRecordField);
     addRecordField.addEventListener('click', function (event) {
         if (event.target === addRecordField) { hideAddRecordField() }

@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static "css/float-card.css" %}">
-    {% comment %} <link rel="stylesheet" href="{% static "css/styles.css" %}"> {% endcomment %}
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/favicon.ico' %}" />
 
     <title>{% block title %}{% endblock title %}</title>
     {% block style %}{% endblock style %}
@@ -43,7 +44,7 @@
             {% block contents %}
             {% endblock contents %}
             <div id="content-footer">
-                Ubersicht 2023 all rights reserved.
+                <img src="{% static "assets/favicon.ico" %}" alt="" width=50 height=40> Ubersicht 2023 all rights reserved.
             </div>
         </div>
     </div>

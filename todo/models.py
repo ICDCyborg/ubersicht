@@ -48,7 +48,6 @@ class TypeChoices(models.TextChoices):
     TRAINING = 'training', '回（トレーニング）'
     EXAM = 'exam', '点（テスト）'
     READING = 'reading', 'ページ（読書）'
-    
 
 class State(Enum):
     '''Todoの状態（Todos.state）'''
@@ -69,6 +68,7 @@ class Todos(models.Model):
     # タイプ：'task', 'training', 'exam', 'reading'
     type = models.CharField(verbose_name='タイプ', default='task', max_length=20,
                             choices=TypeChoices.choices)
+    unit = models.CharField(verbose_name='単位', max_length=20, default='')
     current = models.IntegerField(verbose_name='進捗', default=0)
     memo = models.TextField(verbose_name='メモ', null=True, blank=True)
     # 状態：ピン留めなら０、通常は１、完了済みは２
@@ -79,7 +79,7 @@ class Todos(models.Model):
         return self.title
     
     @property
-    def unit(self) -> str:
+    def dafault_unit(self) -> str:
         '''タイプに合わせた単位を返す'''
         if self.type == 'task':
             return ''

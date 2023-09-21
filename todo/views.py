@@ -7,7 +7,6 @@ from django.shortcuts import render
 from django.views.generic import TemplateView, ListView, UpdateView, \
     CreateView, DeleteView, DetailView
 from django.views.generic.base import ContextMixin
-# import methoddecorator
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
@@ -51,6 +50,7 @@ class Note:
         self.button = button
         self.link = link
         return
+
 class GetGoal(ContextMixin):
     '''contextにgoalをセットする基底クラス'''
     def get_context_data(self, **kwargs):
