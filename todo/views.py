@@ -75,8 +75,11 @@ class MainView(GetGoal, ListView):
     
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        active_todos = Todos.objects.filter(goal=get_goal(self.request.user)).exclude(state=State.COMPLETED.value)
-        if not get_goal(self.request.user):
+        goal = get_goal(self.request.user)
+        active_todos = None
+        if goal:
+            active_todos = Todos.objects.filter(goal=goal).exclude(state=State.COMPLETED.value)
+        if not goal:
             if Goals.objects.filter(user=self.request.user).exists():
                 context['note'] = Note('目標未設定', '目標が設定されていません。', 
                             button='目標を設定', link=reverse_lazy('todo:goal_config'))
@@ -90,7 +93,17 @@ class MainView(GetGoal, ListView):
                                     '・プログラミングを勉強する\n'
                                     '　　　……等', 
                             button='目標を設定', link=reverse_lazy('todo:goal_config'))
-        elif not active_todos.exists():
+        elif goal.until_date == date.today():
+            context['note'] = Note('今日が目標の期日です！', '結果はどうだったでしょうか？\n'
+                                   '目標達成なら下のボタンを押してください！\n'
+                                   '目標未達成の場合は、左の「目標設定」から目標と期日の再設定ができます。', 
+                            button='目標達成！', link=reverse_lazy('todo:goal_achieved'))
+        elif goal.until_date < date.today():
+            context['note'] = Note('目標の期日が過ぎています！', '結果はどうだったでしょうか？\n'
+                                   '目標達成なら下のボタンを押してください！\n'
+                                   '目標未達成の場合は、左の「目標設定」から目標と期日の再設定ができます。', 
+                            button='目標達成！', link=reverse_lazy('todo:goal_achieved'))
+        elif not active_todos:
             context['note'] = Note('タスク未設定', '現在のタスクがありません。\nまずは指標を設定してみませんか？\n'
                                 'テストなら模試、ダイエットなら体重測定など、自分の現在地を定期的に知ることが大事です。',
                                 button='指標を追加', link=reverse_lazy('todo:todo_create', kwargs={'type':'exam'}))

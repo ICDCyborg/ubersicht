@@ -60,7 +60,7 @@
     {% comment %} 完了済みのタスク {% endcomment %}
     <div class="progBar">
         <div class="bar-completed">
-            <div class="bar-label">完了済み</div>
+            <div class="bar-label">{{todo.until_date|date:"m月d日"}}　完了済み</div>
         </div>
     </div>
     {% elif todo.percent is not None and todo.is_expired %}
@@ -74,7 +74,9 @@
     {% comment %} 進行中のタスク {% endcomment %}
     <div class="progBar">
         <div class="bar" style="width:{{todo.percent}}%">
-            <div class="bar-label">{{ todo.percent|floatformat:1 }}%</div>
+            <div class="bar-label">{{ todo.percent|floatformat:1 }}% &nbsp;
+                {% if todo.amount %}({{todo.current}} / {{todo.amount}} {{todo.unit}}){% endif %}
+            </div>
         </div>
     </div>
     {% endif %}

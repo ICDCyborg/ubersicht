@@ -3,16 +3,6 @@
 {% block title %}タスク設定{% endblock title %}
 {% block style %}
 <style>
-    .icon_container .iconlink{
-        color:#000;
-        cursor: default;
-    }
-    .selected .icon{
-        background: #FD0;
-    }
-    .selected:hover .icon{
-        background: #DA0;
-    }
 </style>
 {% endblock style %}
 {% block contents %}
@@ -80,8 +70,14 @@
                         <td>{{ form.memo }}</td>
                     </tr>
                 </table>
+                <input type="hidden" name="type" value="{{form.type.value}}" id="id_type"> 
+                {% for field in form %}
+                {% for error in field.errors %}
+                <p style='color: red;'>{{field.label}}:{{ error }}</p>
+                {% endfor %}
+                {% endfor %}
                 <button type="submit" class="btn">保存</button>
-                <a href="{% url 'todo:main' %}" class="btn btn-secondary">戻る</a>
+                <a href="#" onclick="history.back();" class="btn btn-secondary">戻る</a>
                 {% if update %}
                 <a href="{% url 'todo:todo_complete' pk=form.instance.pk %}" class="btn" id="completeButton">タスク完了</a>
                 <a href="{% url 'todo:todo_delete' pk=form.instance.pk %}" class="btn" id="deleteButton">タスクの削除</a>
@@ -93,6 +89,7 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const unitForm = document.getElementById("id_unit");
+    const typeForm = document.getElementById("id_type");
     const amoutField = document.getElementById("input_amount");
 
     const taskSelector = document.getElementById("taskSelector");
@@ -105,9 +102,11 @@ document.addEventListener("DOMContentLoaded", function () {
     function selectTask() {
         selectorList.forEach((selector) => selector.classList.remove("selected"));
         taskSelector.classList.add("selected");
+        typeForm.value="task";
         id_unit.value="";
         input_amount.style.display="none";
         input_timer.style.display="none";
+        id_until_date.focus();
     }
 
     function selectTraining() {
@@ -115,9 +114,12 @@ document.addEventListener("DOMContentLoaded", function () {
         trainingSelector.classList.add("selected");
         input_amount.style.display="";
         input_timer.style.display="";
-        id_unit.disabled=true
+        typeForm.value="training";
+        id_unit.readOnly=true;
         id_unit.value="回";
+        id_unit.style.background="lightgrey";
         id_amount.placeholder="トータル回数を入力";
+        id_until_date.focus();
     }
     
     function selectReading() {
@@ -125,9 +127,12 @@ document.addEventListener("DOMContentLoaded", function () {
         readingSelector.classList.add("selected");
         input_amount.style.display="";
         input_timer.style.display="";
-        id_unit.disabled=true
+        typeForm.value="reading";
+        id_unit.readOnly=true;
         id_unit.value="ページ";
+        id_unit.style.background="lightgrey";
         id_amount.placeholder="ページ数を入力";
+        id_until_date.focus();
     }
 
     function selectExam() {
@@ -135,13 +140,15 @@ document.addEventListener("DOMContentLoaded", function () {
         examSelector.classList.add("selected");
         input_amount.style.display="";
         input_timer.style.display="";
-        id_unit.disabled=false
+        typeForm.value="exam";
+        id_unit.readOnly=false;
         id_unit.value="点";
+        id_unit.style.background="white";
         id_amount.placeholder="目標値を入力";
+        id_until_date.focus();
     }
 
-    selectTask();
-    switch (type){
+    switch (typeForm.value){
         case "reading":
             selectReading();
             break;
@@ -154,6 +161,8 @@ document.addEventListener("DOMContentLoaded", function () {
         case "training":
             selectTraining();
             break;
+        default:
+            selectTask();
     }
     taskSelector.addEventListener("click", selectTask);
     trainingSelector.addEventListener("click", selectTraining);

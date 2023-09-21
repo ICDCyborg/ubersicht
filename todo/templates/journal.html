@@ -33,15 +33,15 @@
             </p>
             {% elif line.type == 'goal_start' %}
             <p>
-                <strong>開始：</strong>{{ line.object.subject }}
+                <strong>開始：</strong>★{{ line.object.subject }}
             </p>
             {% elif line.type == 'goal_end' and line.object.is_completed %}
             <p>
-                <strong>完了：</strong>{{ line.object.subject }}
+                <strong>完了：</strong>★{{ line.object.subject }}
             </p>
             {% elif line.type == 'goal_end' and not line.object.is_completed %}
             <p>
-                終了予定：{{ line.object.subject }}
+                終了予定：★{{ line.object.subject }}
             </p>
             {% endif %} <!-- line.typeに対する分岐 -->
 

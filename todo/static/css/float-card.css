@@ -74,7 +74,7 @@ body {
     background-color: #FFF;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    min-height: 200px; /* 追加 */
+    min-height: 100px; /* 追加 */
     max-width: 380px;
     min-width: 200px; /* 追加 */
 }
@@ -248,6 +248,20 @@ body {
     flex-direction:row;
     flex-wrap: wrap;
     gap: 15px 50px;
+}
+
+.icon_container .iconlink{
+    color:#000;
+    cursor: default;
+}
+.selected .icon{
+    background: #FD0;
+}
+.selected:hover .icon{
+    background: #DA0;
+}
+.card-body p{
+    padding: 0 20px;
 }
 
 .heart{

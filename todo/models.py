@@ -66,9 +66,8 @@ class Todos(models.Model):
     timer = models.IntegerField(verbose_name='タイマー', null=True, blank=True)
     amount = models.IntegerField(verbose_name='合計', null=True, blank=True)
     # タイプ：'task', 'training', 'exam', 'reading'
-    type = models.CharField(verbose_name='タイプ', default='task', max_length=20,
-                            choices=TypeChoices.choices)
-    unit = models.CharField(verbose_name='単位', max_length=20, default='')
+    type = models.CharField(verbose_name='タイプ', default='task', max_length=20)
+    unit = models.CharField(verbose_name='単位', max_length=20, default='', blank=True)
     current = models.IntegerField(verbose_name='進捗', default=0)
     memo = models.TextField(verbose_name='メモ', null=True, blank=True)
     # 状態：ピン留めなら０、通常は１、完了済みは２

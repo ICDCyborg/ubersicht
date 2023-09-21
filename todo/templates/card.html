@@ -33,7 +33,7 @@
         {% if todo.is_completed %}
         <div class="progBar">
             <div class="bar-completed">
-                <div class="bar-label">完了済み</div>
+                <div class="bar-label"{{todo.until_date|date:"m月d日"}}　>完了済み</div>
             </div>
         </div>
         {% elif todo.percent is not None %}
@@ -58,7 +58,7 @@
             {% elif todo.until_date < today %}
             <h3 style="color:red;">終了予定：{{ todo.until_date| date:"m月d日" }}</h3>
             {% elif todo.until_date %}
-            <h3>終了予定：{{ todo.until_date| date:"m月d日" }}/{{ today}}</h3>
+            <h3>終了予定：{{ todo.until_date| date:"m月d日" }}</h3>
             {% endif %}
         {% endif %}
 
@@ -87,6 +87,11 @@
             <a href="{% url "todo:main" %}" class="iconlink">
                 <img src="{% static "assets/icon/back.png" %}" title="戻る" alt="戻る" class="icon">
             </a>
+        </div>
+
+        {% comment %} グーグルカレンダーに予定追加するリンク {% endcomment %}
+        <div style="padding:20px;">
+            <a href="https://www.google.com/calendar/render?action=TEMPLATE&text={{todo.title}}&details={{todo.memo}}&dates={{todo.until_date|date:"Ymd"}}/{{todo.until_date|date:"Ymd"}}">Googleカレンダーに追加</a>
         </div>
     </div>
 </div>
@@ -123,6 +128,8 @@
     {% else %}
     <div class="card-title">
         <h2>まだ記録がありません。</h2>
+    </div>
+    <div class="card-body">
         {% if todo.type == 'training' %}
         <p>トレーニングを実施したら最初の記録をつけましょう！</p>
         {% elif todo.type == 'reading' %}
@@ -130,9 +137,11 @@
         {% elif todo.type == 'exam' %}
         <p>指標測定を実施したら最初の記録をつけましょう！</p>
         {% endif %}
-        <div id="addRecord2" class="iconlink">
-            <img src="{% static "assets/icon/pencil.png" %}" title="記録追加" alt="記録追加" class="icon">
-            記録の追加
+        <div class="icon_container">
+            <div id="addRecord2" class="iconlink">
+                <img src="{% static "assets/icon/pencil.png" %}" title="記録追加" alt="記録追加" class="icon">
+                記録の追加
+            </div>
         </div>
     </div>
     {% endif %}
