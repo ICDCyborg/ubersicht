@@ -1,6 +1,20 @@
 {% extends 'float-card.html' %}
 {% load static %}
 {% block title %}タスク設定{% endblock title %}
+{% block style %}
+<style>
+    .icon_container .iconlink{
+        color:#000;
+        cursor: default;
+    }
+    .selected .icon{
+        background: #FD0;
+    }
+    .selected:hover .icon{
+        background: #DA0;
+    }
+</style>
+{% endblock style %}
 {% block contents %}
 <div class="card-wide">
     <div class="card-body">
@@ -10,49 +24,60 @@
                 {% csrf_token %}
                 <table border=0>
                     <tr>
-                        <th></th>
+                        <th>種類</th>
                         <td>
                             {% comment %} ボタン類 {% endcomment %}
-                            <div class="icon_container" style="width:300px; margin-bottom:30px;">
-                                <a href="" class="iconlink">
-                                    <img src="{% static "assets/icon/check.png" %}" title="タスク" alt="タスク" class="icon">
-                                </a>
-                                <a href="" class="iconlink">
-                                    <img src="{% static "assets/icon/muscle.png" %}" title="トレーニング" alt="トレーニング" class="icon">
-                                </a>
-                                <a href="" class="iconlink">
-                                    <img src="{% static "assets/icon/book.png" %}" title="読書" alt="読書" class="icon">
-                                </a>
-                                <a href="" class="iconlink">
-                                    <img src="{% static "assets/icon/measure.png" %}" title="指標" alt="指標" class="icon">
-                                </a>
+                            <div class="icon_container" style="width:500px; margin-bottom:30px;">
+                                <div class="iconlink" id="taskSelector" title="一回きりの単純なタスクです。" >
+                                    <img src="{% static "assets/icon/check.png" %}" 
+                                    alt="タスク" class="icon">
+                                    タスク
+                                </div>
+                                <div class="iconlink" id="trainingSelector" title="繰り返し行うトレーニングです。">
+                                    <img src="{% static "assets/icon/muscle.png" %}" 
+                                    alt="トレーニング" class="icon">
+                                    トレーニング
+                                </div>
+                                <div class="iconlink" id="readingSelector" title="本を読んで勉強します。" >
+                                    <img src="{% static "assets/icon/book.png" %}" 
+                                    alt="読書" class="icon">
+                                    読書
+                                </div>
+                                <div class="iconlink" id="examSelector" title="目標にどれだけ近づいているか測定します。" >
+                                    <img src="{% static "assets/icon/measure.png" %}" 
+                                    alt="指標" class="icon">
+                                    指標
+                                </div>
                             </div>
                         </td>
                     </tr>
-                    <tr>
+                    <tr id="input_until_date">
                         <th>期日：</th>
-                        <td><input type="date" name="until_date" value="{{ form.until_date.value|date:'Y-m-d' }}" id="id_until_date" autofocus> までに、</td>
+                        <td><input type="date" name="until_date" value="{{ form.until_date.value|date:'Y-m-d' }}" 
+                            id="id_until_date" autofocus> までに、</td>
                     </tr>
-                    <tr>
+                    <tr id="input_amount">
                         <th>目標値：</th>
-                        <td>{{ form.amount }} {{ form.type }}</td>
+                        <td>{{ form.amount }} {{ form.unit }}</td>
                     </tr>
-                    <tr>
+                    <tr id="input_title">
                         <th>やる事：</th>
                         <td>{{ form.title }}</td>
                     </tr>
-                    {% comment %} <tr>
-                        <th>画像：</th>
-                        <td>{{ form.image }}</td>
-                    </tr> {% endcomment %}
-                    <tr>
-                        <th>タイマー：<br>（規定値）</th>
+                    <tr id="input_timer">
+                        <th>タイマー
+                            <a href="#" title="タイマーを起動した時の初期値を設定します。
+勉強や作業は25分程度の間隔で小休止を挟むと捗ると言われています。
+
+利用例：
+・トレーニング...1セットの分数（10~30分、強度に応じて）
+・模試...試験時間（30～120分）
+・読書...小休止の間隔（25~40分）"><sup>?</sup></a>：</th>
                         <td>{{ form.timer }}　分</td>
                     </tr>
-                    <tr>
+                    <tr id="input_memo">
                         <th style="vertical-align: top;">コメント：</th>
                         <td>{{ form.memo }}</td>
-                        {% comment %} <td><input type="text" name="memo" value="{{ form.memo.value }}" id="id_memo" height=200></td> {% endcomment %}
                     </tr>
                 </table>
                 <button type="submit" class="btn">保存</button>
@@ -65,4 +90,75 @@
         </div>
     </div>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const unitForm = document.getElementById("id_unit");
+    const amoutField = document.getElementById("input_amount");
+
+    const taskSelector = document.getElementById("taskSelector");
+    const trainingSelector = document.getElementById("trainingSelector");
+    const readingSelector = document.getElementById("readingSelector");
+    const examSelector = document.getElementById("examSelector");
+    const selectorList = [taskSelector, trainingSelector, readingSelector, examSelector];
+    const type = "{{type}}"
+    
+    function selectTask() {
+        selectorList.forEach((selector) => selector.classList.remove("selected"));
+        taskSelector.classList.add("selected");
+        id_unit.value="";
+        input_amount.style.display="none";
+        input_timer.style.display="none";
+    }
+
+    function selectTraining() {
+        selectorList.forEach((selector) => selector.classList.remove("selected"));
+        trainingSelector.classList.add("selected");
+        input_amount.style.display="";
+        input_timer.style.display="";
+        id_unit.disabled=true
+        id_unit.value="回";
+        id_amount.placeholder="トータル回数を入力";
+    }
+    
+    function selectReading() {
+        selectorList.forEach((selector) => selector.classList.remove("selected"));
+        readingSelector.classList.add("selected");
+        input_amount.style.display="";
+        input_timer.style.display="";
+        id_unit.disabled=true
+        id_unit.value="ページ";
+        id_amount.placeholder="ページ数を入力";
+    }
+
+    function selectExam() {
+        selectorList.forEach((selector) => selector.classList.remove("selected"));
+        examSelector.classList.add("selected");
+        input_amount.style.display="";
+        input_timer.style.display="";
+        id_unit.disabled=false
+        id_unit.value="点";
+        id_amount.placeholder="目標値を入力";
+    }
+
+    selectTask();
+    switch (type){
+        case "reading":
+            selectReading();
+            break;
+        case "task":
+            selectTask();
+            break;
+        case "exam":
+            selectExam();
+            break;
+        case "training":
+            selectTraining();
+            break;
+    }
+    taskSelector.addEventListener("click", selectTask);
+    trainingSelector.addEventListener("click", selectTraining);
+    readingSelector.addEventListener("click", selectReading);
+    examSelector.addEventListener("click", selectExam);
+});
+</script>
 {% endblock contents %}

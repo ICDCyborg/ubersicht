@@ -210,13 +210,13 @@ class TodoConfigView(TodoFormBaseView, UpdateView):
 @method_decorator(login_required, name='dispatch')
 class TodoCreateView(TodoFormBaseView, CreateView):
     '''Todo作成ページ'''
-    def get_initial(self) -> dict[str, Any]:
-        initial = super().get_initial()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         if 'type' in self.kwargs:
             slug = self.kwargs['type']
             if slug in TypeChoices:
-                initial['type'] = TypeChoices(slug)
-        return initial
+                context['type'] = TypeChoices(slug)
+        return context
 
 @method_decorator(login_required, name='dispatch')
 class TodoCompleteView(GetGoal, TemplateView):
