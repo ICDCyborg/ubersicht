@@ -21,7 +21,7 @@ from . import forms
 from .models import Goals, Todos, Records, State, JournalLine, TypeChoices
 
 # Create your views here.
-def get_goal(user) -> Optional[Goals]:
+def get_goal(user):
     '''目標を取得する'''
     if user.is_anonymous:
         return None
@@ -73,7 +73,7 @@ class MainView(GetGoal, ListView):
         queryset = Todos.objects.filter(goal=goal).order_by('state')
         return queryset
     
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         goal = get_goal(self.request.user)
         active_todos = None
@@ -132,7 +132,7 @@ class GoalConfigView(GetGoal, UpdateView):
     def get_object(self, queryset=None):
         return get_goal(self.request.user)
     
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         context['update'] = bool(get_goal(self.request.user))
         return context
@@ -154,7 +154,7 @@ class GoalAchievedView(GetGoal, TemplateView):
             pass
         return super().get(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         context['title'] = '目標達成！'
         context['congrats'] = '目標を達成しました！おめでとうございます！'
@@ -171,7 +171,7 @@ class GoalDeleteView(TemplateView):
             goal.delete()
         return super().get(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         context['title'] = '目標の削除'
         context['message'] = '目標を削除しました。'
@@ -183,7 +183,7 @@ class AchievementView(GetGoal, ListView):
     template_name = 'achievement.html'
     model = Goals
 
-    def get_queryset(self) -> QuerySet[Any]:
+    def get_queryset(self):
         queryset = Goals.objects.filter(user=self.request.user, is_completed=True)
         for goal in queryset:
             todos = Todos.objects.filter(goal=goal)
@@ -260,7 +260,7 @@ class TodoDeleteView(GetGoal, TemplateView):
         todo.delete()
         return super().get(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         context['title'] = 'タスクの削除'
         context['message'] = 'タスクを削除しました。'
@@ -297,7 +297,7 @@ class TodoDetailView(GetGoal, DetailView):
 
         return super().get(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+    def get_context_data(self, **kwargs: Any):
         from . import graph
         # グラフの取得
         # 今日から数えて七日前までのデータを一日ごとに集計する。
@@ -378,7 +378,7 @@ def pin_todo(request, pk):
 class JournalView(GetGoal, TemplateView):
     template_name = 'journal.html'
 
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+    def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         try:
             goal = Goals.objects.get(user=self.request.user, is_completed=False)
