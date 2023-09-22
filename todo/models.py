@@ -124,7 +124,7 @@ class Todos(models.Model):
             return (self.until_date - date.today()).days
     
     @property
-    def percent(self) -> float | None:
+    def percent(self) -> float:
         '''進捗率を浮動小数点で返す'''
         if not self.amount:
             return None
