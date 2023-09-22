@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // クエリパラメータからタイマーの分数を取得
     const initialMinutes = parseInt(timerField.getAttribute("data-minutes")) || 10;
     timerDisplay.value = `${String(initialMinutes).padStart(2, '0')}:00`;
+    timerWrapper.style.backgroundColor = "orange"; 
 
     function startTimer(minutes) {
         isPaused = false;

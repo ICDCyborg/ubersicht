@@ -225,7 +225,8 @@
     }
     // ボタンのクリックイベントを設定
     addRecordButton.addEventListener('click', showAddRecordField);
-    addRecordButton2.addEventListener('click', showAddRecordField);
+    if (addRecordButton2) {
+        addRecordButton2.addEventListener('click', showAddRecordField);}
     hideAddRecordButton.addEventListener('click', hideAddRecordField);
     addRecordField.addEventListener('click', function (event) {
         if (event.target === addRecordField) { hideAddRecordField() }
