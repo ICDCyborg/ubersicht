@@ -211,12 +211,12 @@ class TodoFormBaseView(GetGoal):
 class TodoConfigView(TodoFormBaseView, UpdateView):
     '''Todo更新ページ'''
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         context['update'] = True
         return context
 
-    def get_object(self, queryset: QuerySet[Any] | None = ...):
+    def get_object(self, queryset = ...):
         # typeの数値をCustomChoiceWidgetのデータに変換する
         return Todos.objects.get(pk=self.kwargs['pk'])
 
@@ -243,7 +243,7 @@ class TodoCompleteView(GetGoal, TemplateView):
         todo.save()
         return super().get(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         context['title'] = 'タスク完了'
         context['congrats'] = 'タスクを完了し、目標に近づきました！'
