@@ -23,7 +23,7 @@ body {
     justify-content: space-between;
     padding: 20px;
     transition: width 0.3s;
-    overflow: hidden;
+    overflow: scroll;
     text-wrap: nowrap;
 }
 
@@ -154,7 +154,6 @@ body {
 @media (max-width: 900px) {
     #left-pane {
         width: 0;
-        overflow: hidden;
     }
 
     #toggle-button {

@@ -104,7 +104,9 @@
 {% endfor %}
 
 {% comment %} カード追加ボタン {% endcomment %}
+{% if goal %}
 <a href="{% url "todo:todo_create" %}" id="add-card-button">
     <img src="{% static "assets/icon/plus.png" %}" title="カード追加" alt="カード追加">
 </a>
+{% endif %}
 {% endblock  %}

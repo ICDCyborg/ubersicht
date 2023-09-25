@@ -34,11 +34,13 @@ function confirmCompletion() {
 // ページ内の全てのリンクに確認ダイアログを適用する
 const completeButton = document.getElementById("completeButton");
 const deleteButton = document.getElementById("deleteButton");
-completeButton.addEventListener("click", function(event) {
-    if (!confirmCompletion()){
-        event.preventDefault();
-    }});
-deleteButton.addEventListener("click", function(event) {
-    if (!confirmDeletion()){
-        event.preventDefault();
-    }});
+if (completeButton) {
+    completeButton.addEventListener("click", function(event) {
+        if (!confirmCompletion()){
+            event.preventDefault();
+        }});}
+if (deleteButton){
+    deleteButton.addEventListener("click", function(event) {
+        if (!confirmDeletion()){
+            event.preventDefault();
+        }});}
