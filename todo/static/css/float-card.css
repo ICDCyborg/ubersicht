@@ -201,6 +201,7 @@ body {
     color: black;
     position:relative;
     padding-left: 1em;
+    text-wrap: nowrap;
 }
 .icon{
     background-color: #ccc;

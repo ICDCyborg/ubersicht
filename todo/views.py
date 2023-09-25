@@ -381,7 +381,7 @@ class JournalView(GetGoal, TemplateView):
     def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         try:
-            goal = Goals.objects.get(user=self.request.user, is_completed=False)
+            goal = Goals.objects.filter(user=self.request.user).latest('until_date')
         except Goals.DoesNotExist:
             return context
         todos = Todos.objects.filter(goal=goal)
@@ -393,10 +393,12 @@ class JournalView(GetGoal, TemplateView):
         # タスクの行
         for todo in todos:
             journals.append(JournalLine(todo, "todo_start", todo.from_date))
-            journals.append(JournalLine(todo, "todo_end", todo.until_date))
+            if todo.until_date:
+                journals.append(JournalLine(todo, "todo_end", todo.until_date))
         # 目標の行
         journals.append(JournalLine(goal, "goal_start", goal.from_date))
-        journals.append(JournalLine(goal, "goal_end", goal.until_date))
+        if goal.until_date:
+            journals.append(JournalLine(goal, "goal_end", goal.until_date))
         # 日付順に並べ替え
         journals.sort(key=lambda x: x.date, reverse=True)
         object_list = []
