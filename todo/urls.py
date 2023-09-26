@@ -25,6 +25,7 @@ urlpatterns = [
     # 実施記録の作成、閲覧、削除
     path('record/delete/<int:pk>', record_delete, name='record_delete'),
     path('journal/', JournalView.as_view(), name='journal'),
+    path('sendemailfordebug/<int:pk>', send_email_for_debug, name='sendemailfordebug'),
     ### 以下はtodo_detailに統合済み ###
     # path('record/add/<int:pk>', RecordView.as_view(), name='record'),
     # path('record/add/done/', RecordAddView.as_view(), name='record_add'),

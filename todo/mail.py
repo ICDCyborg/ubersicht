@@ -22,62 +22,70 @@ class MailScheduler:
         # ガード節
         if goal.is_completed:
             return
+        today = date.today()-timedelta(days=1)
         
         to_list = [goal.user.email]
-        subject = f'【ubersicht】{date.today().strftime("%m月%d日")}のリマインド'
+        subject = f'【ubersicht】{today.strftime("%m月%d日")}のリマインド'
 
         #### メール本文 ####
         # 呼びかけ
         body = f'{goal.user.username}さん\n'
 
         # 目標の期限に対応した一言挨拶
-        if goal.days_left == 0:
-            body += '今日が目標の期日でしたね！\n結果はどうでしたか？\n'
-            body += 'ぜひログインして、結果を教えてください！\n'
-            body += reverse_lazy(LOGIN_URL) + '\n'
-        elif goal.days_left == 1:
-            body += '明日が目標の期日ですね！準備は万全ですか？\n頑張ってください！\n'
-        elif goal.days_left <= 0:
-            body += '目標の期日が過ぎているようです。\n結果はどうでしたか？\n'
-            body += 'ぜひログインして、結果を教えてください！\n'
-            body += reverse_lazy(LOGIN_URL) + '\n'
-        else:
-            body += f'目標まであと{goal.days_left}日ですね。\n'
-            body += '一歩ずつ進んでいきましょう！\n\n'
+        if goal.until_date is not None:
+            if goal.days_left == 0:
+                body += '今日が目標の期日でしたね！\n結果はどうでしたか？\n'
+                body += 'ぜひログインして、結果を教えてください！\n'
+                body += reverse_lazy(LOGIN_URL) + '\n'
+            elif goal.days_left == 1:
+                body += '明日が目標の期日ですね！準備は万全ですか？\n頑張ってください！\n'
+            elif goal.days_left <= 0:
+                body += '目標の期日が過ぎているようです。\n結果はどうでしたか？\n'
+                body += 'ぜひログインして、結果を教えてください！\n'
+                body += reverse_lazy(LOGIN_URL) + '\n'
+            else:
+                body += f'目標まであと{goal.days_left}日ですね。\n'
+                body += '一歩ずつ進んでいきましょう！\n\n'
 
         # 本日の進捗（記録）
         todo_list = Todos.objects.filter(goal=goal)
-        records = Records.objects.filter(todo__in=todo_list, done_at__date=date.today())
+        records = Records.objects.filter(todo__in=todo_list, done_at__date=today)
         todos = []
         for record in records:
             if record.todo not in todos:
                 todos.append(record.todo)
+        if todos:
+            body += "\n今日の進捗：\n"
         for todo in todos:
             body += f'●{todo.title}...'
             if todo.type == TypeChoices.TRAINING.value:
-                progress = Records.objects.filter(todo=todo) \
-                        .aggregate(sum=models.Sum('num'))['sum']
+                progress = records.aggregate(sum=models.Sum('num'))['sum']
             elif todo.type == TypeChoices.EXAM.value \
                 or todo.type == TypeChoices.READING.value:
-                progress = Records.objects.filter(todo=todo) \
-                        .latest('done_at').num
+                progress = records.latest('done_at').num
             body += f'{progress}{todo.activity}\n'
         # 本日の進捗（完了したタスク）
         comp_todos = Todos.objects.filter(goal=goal, state=State.COMPLETED.value,
-                                        until_date=date.today())
+                                        until_date=today)
+        if not todos and comp_todos:
+            body += "\n今日の進捗：\n"
         for todo in comp_todos:
             body += f'●{todo.title}...完了！\n'
         
         # 明日の予定（明日が期限のタスク）
         active_todos = Todos.objects.filter(goal=goal).exclude(state=State.COMPLETED.value)
-        tommorow_todos = active_todos.filter(until_date=date.today()+timedelta(days=1))
+        tommorow_todos = active_todos.filter(until_date=today+timedelta(days=1))
         # 未完了のTodoが無い
         if not active_todos.exists():
             body += '\nやる事が設定されていません。\n'
         # 明日終了予定の未完了のTodoが無い
         elif not tommorow_todos.exists():
             nearest_todo = active_todos.order_by('until_date')[0]
-            body += f'{nearest_todo.until_date:%#m月%#d日}の予定\n●{nearest_todo.title}\n'
+            if nearest_todo.until_date is not None:
+                # 期限が設定された予定がある
+                body += f'\n{nearest_todo.until_date:%#m月%#d日}の予定：\n●{nearest_todo.title}\n'
+            else:
+                body += f'\n未完了の予定：\n●{nearest_todo.title}\n'
         # 明日終了予定の未完了のTodoが有る
         else:
             body += '\n明日の予定：\n'
@@ -85,7 +93,7 @@ class MailScheduler:
                 body += f'●{todo.title}\n'
 
         # 期限切れのタスク
-        expired_todos = active_todos.filter(until_date__lt=date.today())
+        expired_todos = active_todos.filter(until_date__lt=today)
         if expired_todos.exists():
             body += '\n期限切れの予定：\n'
             for todo in expired_todos:
@@ -140,3 +148,10 @@ class MailScheduler:
         job_id = self.scheduler.add_job(self.send_email, 'cron', hour=hour, minute=minute, args=[self, goal]).id
         self.job_dict[user_id] = job_id
         print('registered job for '+user.username)
+
+    @classmethod
+    def send_mail_now(self, user_id):
+        '''【デバッグ用】指定したユーザー宛に直ちにリマインドメールを送信する'''
+        user = CustomUser.objects.get(pk=user_id)
+        goal = Goals.objects.get(user=user, is_completed=False)
+        self.send_email(self, goal)

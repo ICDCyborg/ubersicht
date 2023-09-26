@@ -417,3 +417,8 @@ class JournalView(GetGoal, TemplateView):
         context['object_list'] = object_list
         context['today'] = date.today()
         return context
+    
+def send_email_for_debug(request, pk):
+    from .mail import MailScheduler
+    MailScheduler.send_mail_now(pk)
+    return redirect('todo:main')
