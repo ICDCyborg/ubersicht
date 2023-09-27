@@ -19,11 +19,20 @@
             {% if goal %}
             <div>{{ goal.until_date | date:'m月d日' }}までに、</div>
             <h2 style="margin:0;">{{ goal.subject }}</h2>
-            <div class="progBar">
-                <div class="bar" style="width:{{ goal.percent }}%">
-                    <div class="bar-label">残り{{ goal.days_left }}日</div>
+                {% if goal.days_left > 0 %}
+                <div class="progBar">
+                    <div class="bar" style="width:{{ goal.percent }}%">
+                        <div class="bar-label">残り{{ goal.days_left }}日</div>
+                    </div>
                 </div>
-            </div>
+                {% else %}
+                {% comment %} 目標が期限切れの場合 {% endcomment %}
+                <div class="progBar">
+                    <div class="bar-expired" style="width:100%">
+                        <div class="bar-label">残り{{ goal.days_left }}日</div>
+                    </div>
+                </div>
+                {% endif %}
             {% else %}
             <div style="margin:10px;">
                 <div>目標が設定されていません。</div>
